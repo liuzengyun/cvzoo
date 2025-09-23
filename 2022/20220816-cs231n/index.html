@@ -1,0 +1,3454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head hexo-theme='https://github.com/volantis-x/hexo-theme-volantis/#6.0.0-alpha.1'>
+  <meta name="generator" content="Hexo 7.3.0">
+  <meta name="Volantis" content="6.0.0-alpha.1">
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
+  <link rel="canonical" href="http://www.cvzoo.cn/2022/20220816-cs231n/"/>
+  <!-- 渲染优化 -->
+    <meta http-equiv='x-dns-prefetch-control' content='on' />
+      <link rel='dns-prefetch' href='https://unpkg.com'>
+      <link rel="preconnect" href="https://unpkg.com" crossorigin>
+      <link rel='dns-prefetch' href='https://cdn.bootcdn.net'>
+      <link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Content-Security-Policy" content=" default-src 'self' https:; block-all-mixed-content; base-uri 'self' https:; form-action 'self' https:; worker-src 'self' https:; connect-src 'self' https: *; img-src 'self' data: https: *; media-src 'self' https: *; font-src 'self' data: https: *; frame-src 'self' https: *; manifest-src 'self' https: *; child-src https:; script-src 'self' https: 'unsafe-inline' *; style-src 'self' https: 'unsafe-inline' *; ">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
+  <meta content="telephone=no" name="format-detection">
+  <!-- import head_begin begin -->
+  <!-- import head_begin end -->
+  <!-- Custom Files headBegin begin-->
+  
+  <!-- Custom Files headBegin end-->
+  <link rel="preload" href="/css/style.css" as="style">
+  <link rel="preload" href="https://unpkg.com/volantis-static@0.0.1660614606622/media/fonts/VarelaRound/VarelaRound-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+<link rel="preload" href="https://unpkg.com/volantis-static@0.0.1660614606622/media/fonts/UbuntuMono/UbuntuMono-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+
+  <!-- feed -->
+      <link rel="alternate" href="/atom.xml" title="莫拉维克猫屋" type="application/atom+xml">
+  <!-- 页面元数据 -->
+  <title>粗略的cs231n学习笔记 - 莫拉维克猫屋</title>
+  <meta name="keywords" content="null">
+  <meta desc name="description" content="莫拉维克猫屋, 刘增运个人博客 - lzy - 莫拉维克猫屋">
+  
+<meta property="og:type" content="article">
+<meta property="og:title" content="粗略的cs231n学习笔记">
+<meta property="og:url" content="http://www.cvzoo.cn/2022/20220816-cs231n/index.html">
+<meta property="og:site_name" content="莫拉维克猫屋">
+<meta property="og:description" content="11.1 概述助教老师讲了讲课程的重要性和整体内容。 1.2 历史背景1.2.1 history of cv5.4亿年前化石表明动物已经具备眼睛，物种大爆炸。 现在的视觉称为了最重要的感知能力。大脑中50%的神经细胞在处理视觉信息。 16世纪，第一台针孔理论相机。目前相机是最受欢迎的传感器之一。 人类开始研究动物视觉：电生理学研究，猫实验，看看是啥能刺激视觉中枢。 1966，麻省理工学院，视觉论文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
+<meta property="article:published_time" content="2022-08-16T11:58:09.000Z">
+<meta property="article:modified_time" content="2022-08-16T11:58:09.000Z">
+<meta property="article:author" content="lzy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
+  <style>
+    /* 首屏样式 */
+    #safearea {
+  display: none;
+}
+:root {
+  --color-site-body: #f4f4f4;
+  --color-site-bg: #f4f4f4;
+  --color-site-inner: #fff;
+  --color-site-footer: #666;
+  --color-card: #fff;
+  --color-text: #444;
+  --color-block: #f6f6f6;
+  --color-inlinecode: #c74f00;
+  --color-codeblock: #fff7ea;
+  --color-h1: #3a3a3a;
+  --color-h2: #3a3a3a;
+  --color-h3: #333;
+  --color-h4: #444;
+  --color-h5: #555;
+  --color-h6: #666;
+  --color-p: #444;
+  --color-list: #666;
+  --color-list-hl: #30ad91;
+  --color-meta: #888;
+  --color-read-bkg: #e0d8c8;
+  --color-read-post: #f8f1e2;
+  --color-copyright-bkg: #f5f5f5;
+}
+* {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+*::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+*::-webkit-scrollbar-track-piece {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #3dd9b6;
+  cursor: pointer;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #ff5722;
+}
+html {
+  color: var(--color-text);
+  width: 100%;
+  height: 100%;
+  font-family: UbuntuMono, "Varela Round", "PingFang SC", "Microsoft YaHei", Helvetica, Arial, Menlo, Monaco, monospace, sans-serif;
+  font-size: 16px;
+}
+html >::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+html >::-webkit-scrollbar-track-piece {
+  background: transparent;
+}
+html >::-webkit-scrollbar-thumb {
+  background: #3dd9b6;
+  cursor: pointer;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+}
+html >::-webkit-scrollbar-thumb:hover {
+  background: #ff5722;
+}
+body {
+  background-color: var(--color-site-body);
+  text-rendering: optimizelegibility;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+body.modal-active {
+  overflow: hidden;
+}
+@media screen and (max-width: 680px) {
+  body.modal-active {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+a {
+  color: #2092ec;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+a:hover {
+  color: #ff5722;
+}
+a:active,
+a:hover {
+  outline: 0;
+}
+ul,
+ol {
+  padding-left: 0;
+}
+ul li,
+ol li {
+  list-style: none;
+}
+header {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+}
+img {
+  border: 0;
+  background: none;
+  max-width: 100%;
+}
+svg:not(:root) {
+  overflow: hidden;
+}
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  height: 0;
+  border: 0;
+  border-radius: 1px;
+  -webkit-border-radius: 1px;
+  border-bottom: 1px solid rgba(68,68,68,0.1);
+}
+button,
+input {
+  color: inherit;
+  font: inherit;
+  margin: 0;
+}
+button {
+  overflow: visible;
+  text-transform: none;
+  -webkit-appearance: button;
+  cursor: pointer;
+}
+@supports (backdrop-filter: blur(20px)) {
+  .blur {
+    background: rgba(255,255,255,0.9) !important;
+    backdrop-filter: saturate(200%) blur(20px);
+  }
+}
+.shadow {
+  box-shadow: 0 1px 2px 0px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0 1px 2px 0px rgba(0,0,0,0.1);
+}
+.shadow.floatable {
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+.shadow.floatable:hover {
+  box-shadow: 0 2px 4px 0px rgba(0,0,0,0.1), 0 4px 8px 0px rgba(0,0,0,0.1), 0 8px 16px 0px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0 2px 4px 0px rgba(0,0,0,0.1), 0 4px 8px 0px rgba(0,0,0,0.1), 0 8px 16px 0px rgba(0,0,0,0.1);
+}
+#l_cover {
+  min-height: 64px;
+}
+.cover-wrapper {
+  top: 0;
+  left: 0;
+  max-width: 100%;
+  height: 100vh;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  flex-wrap: nowrap;
+  -webkit-flex-wrap: nowrap;
+  -khtml-flex-wrap: nowrap;
+  -moz-flex-wrap: nowrap;
+  -o-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  align-items: center;
+  align-self: center;
+  align-content: center;
+  color: var(--color-site-inner);
+  padding: 0 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: -100px;
+}
+.cover-wrapper .cover-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+}
+.cover-wrapper .cover-bg.lazyload:not(.loaded) {
+  opacity: 0;
+  -webkit-opacity: 0;
+  -moz-opacity: 0;
+}
+.cover-wrapper .cover-bg.lazyload.loaded {
+  animation-delay: 0s;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+  animation-name: fadeIn;
+}
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -khtml-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -o-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -khtml-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -o-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -khtml-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -o-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -khtml-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -o-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+.cover-wrapper .cover-body {
+  z-index: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.cover-wrapper#full {
+  height: calc(100vh + 100px);
+  padding-bottom: 100px;
+}
+.cover-wrapper#half {
+  max-height: 640px;
+  min-height: 400px;
+  height: calc(36vh - 64px + 200px);
+}
+.cover-wrapper #scroll-down {
+  width: 100%;
+  height: 64px;
+  position: absolute;
+  bottom: 100px;
+  text-align: center;
+  cursor: pointer;
+}
+.cover-wrapper #scroll-down .scroll-down-effects {
+  color: #fff;
+  font-size: 24px;
+  line-height: 64px;
+  position: absolute;
+  width: 24px;
+  left: calc(50% - 12px);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  animation: scroll-down-effect 1.5s infinite;
+  -webkit-animation: scroll-down-effect 1.5s infinite;
+  -khtml-animation: scroll-down-effect 1.5s infinite;
+  -moz-animation: scroll-down-effect 1.5s infinite;
+  -o-animation: scroll-down-effect 1.5s infinite;
+  -ms-animation: scroll-down-effect 1.5s infinite;
+}
+@-moz-keyframes scroll-down-effect {
+  0% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+  50% {
+    top: -16px;
+    opacity: 0.4;
+    -webkit-opacity: 0.4;
+    -moz-opacity: 0.4;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@-webkit-keyframes scroll-down-effect {
+  0% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+  50% {
+    top: -16px;
+    opacity: 0.4;
+    -webkit-opacity: 0.4;
+    -moz-opacity: 0.4;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@-o-keyframes scroll-down-effect {
+  0% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+  50% {
+    top: -16px;
+    opacity: 0.4;
+    -webkit-opacity: 0.4;
+    -moz-opacity: 0.4;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@keyframes scroll-down-effect {
+  0% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+  50% {
+    top: -16px;
+    opacity: 0.4;
+    -webkit-opacity: 0.4;
+    -moz-opacity: 0.4;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+.cover-wrapper .cover-body {
+  margin-top: 64px;
+  margin-bottom: 100px;
+}
+.cover-wrapper .cover-body,
+.cover-wrapper .cover-body .top,
+.cover-wrapper .cover-body .bottom {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  -webkit-justify-content: center;
+  -khtml-justify-content: center;
+  -moz-justify-content: center;
+  -o-justify-content: center;
+  -ms-justify-content: center;
+  max-width: 100%;
+}
+.cover-wrapper .cover-body .bottom {
+  margin-top: 32px;
+}
+.cover-wrapper .cover-body .title {
+  font-family: "Varela Round", "PingFang SC", "Microsoft YaHei", Helvetica, Arial, Helvetica, monospace;
+  font-size: 3.125rem;
+  line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.cover-wrapper .cover-body .subtitle {
+  font-size: 20px;
+}
+.cover-wrapper .cover-body .logo {
+  max-height: 120px;
+  max-width: calc(100% - 4 * 16px);
+}
+@media screen and (min-height: 1024px) {
+  .cover-wrapper .cover-body .title {
+    font-size: 3rem;
+  }
+  .cover-wrapper .cover-body .subtitle {
+    font-size: 1.05rem;
+  }
+  .cover-wrapper .cover-body .logo {
+    max-height: 150px;
+  }
+}
+.cover-wrapper .cover-body .m_search {
+  position: relative;
+  max-width: calc(100% - 16px);
+  width: 320px;
+  vertical-align: middle;
+}
+.cover-wrapper .cover-body .m_search .form {
+  position: relative;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  width: 100%;
+}
+.cover-wrapper .cover-body .m_search .icon,
+.cover-wrapper .cover-body .m_search .input {
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+.cover-wrapper .cover-body .m_search .icon {
+  position: absolute;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  line-height: 2.5rem;
+  width: 32px;
+  top: 0;
+  left: 5px;
+  color: rgba(68,68,68,0.75);
+}
+.cover-wrapper .cover-body .m_search .input {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  height: 2.5rem;
+  width: 100%;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  font-size: 0.875rem;
+  -webkit-appearance: none;
+  padding-left: 36px;
+  border-radius: 1.4rem;
+  -webkit-border-radius: 1.4rem;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  border: none;
+  color: var(--color-text);
+}
+@media screen and (max-width: 500px) {
+  .cover-wrapper .cover-body .m_search .input {
+    padding-left: 36px;
+  }
+}
+.cover-wrapper .cover-body .m_search .input:hover {
+  background: rgba(255,255,255,0.8);
+}
+.cover-wrapper .cover-body .m_search .input:focus {
+  background: #fff;
+}
+.cover-wrapper .list-h {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  -khtml-flex-wrap: wrap;
+  -moz-flex-wrap: wrap;
+  -o-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  align-items: stretch;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.cover-wrapper .list-h a {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1 0;
+  -ms-flex: 1 0;
+  flex: 1 0;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  font-weight: 600;
+}
+.cover-wrapper .list-h a img {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  margin: 4px;
+  min-width: 40px;
+  max-width: 44px;
+}
+@media screen and (max-width: 768px) {
+  .cover-wrapper .list-h a img {
+    min-width: 36px;
+    max-width: 40px;
+  }
+}
+@media screen and (max-width: 500px) {
+  .cover-wrapper .list-h a img {
+    margin: 2px 4px;
+    min-width: 32px;
+    max-width: 36px;
+  }
+}
+@media screen and (max-width: 375px) {
+  .cover-wrapper .list-h a img {
+    min-width: 28px;
+    max-width: 32px;
+  }
+}
+.cover-wrapper {
+  max-width: 100%;
+}
+.cover-wrapper.search .bottom .menu {
+  margin-top: 16px;
+}
+.cover-wrapper.search .bottom .menu .list-h a {
+  white-space: nowrap;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  align-items: baseline;
+  padding: 2px;
+  margin: 4px;
+  color: var(--color-site-inner);
+  opacity: 0.75;
+  -webkit-opacity: 0.75;
+  -moz-opacity: 0.75;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  border-bottom: 2px solid transparent;
+}
+.cover-wrapper.search .bottom .menu .list-h a i {
+  margin-right: 4px;
+}
+.cover-wrapper.search .bottom .menu .list-h a p {
+  font-size: 0.9375rem;
+}
+.cover-wrapper.search .bottom .menu .list-h a:hover,
+.cover-wrapper.search .bottom .menu .list-h a.active,
+.cover-wrapper.search .bottom .menu .list-h a:active {
+  opacity: 1;
+  -webkit-opacity: 1;
+  -moz-opacity: 1;
+  border-bottom: 2px solid var(--color-site-inner);
+}
+.cover-wrapper.dock .menu,
+.cover-wrapper.featured .menu,
+.cover-wrapper.focus .menu {
+  border-radius: 6px;
+  -webkit-border-radius: 6px;
+}
+.cover-wrapper.dock .menu .list-h a,
+.cover-wrapper.featured .menu .list-h a,
+.cover-wrapper.focus .menu .list-h a {
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  line-height: 24px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-bottom: none;
+  text-align: center;
+  align-content: flex-end;
+  color: rgba(68,68,68,0.7);
+  font-size: 1.5rem;
+}
+@media screen and (max-width: 500px) {
+  .cover-wrapper.dock .menu .list-h a,
+  .cover-wrapper.featured .menu .list-h a,
+  .cover-wrapper.focus .menu .list-h a {
+    padding: 12px 8px;
+  }
+}
+.cover-wrapper.dock .menu .list-h a i,
+.cover-wrapper.featured .menu .list-h a i,
+.cover-wrapper.focus .menu .list-h a i {
+  margin: 8px;
+}
+.cover-wrapper.dock .menu .list-h a p,
+.cover-wrapper.featured .menu .list-h a p,
+.cover-wrapper.focus .menu .list-h a p {
+  font-size: 0.875rem;
+}
+.cover-wrapper.dock .menu .list-h a.active,
+.cover-wrapper.featured .menu .list-h a.active,
+.cover-wrapper.focus .menu .list-h a.active {
+  background: var(--color-card);
+  backdrop-filter: none;
+}
+.cover-wrapper.dock .menu .list-h a.active i,
+.cover-wrapper.featured .menu .list-h a.active i,
+.cover-wrapper.focus .menu .list-h a.active i,
+.cover-wrapper.dock .menu .list-h a.active i+p,
+.cover-wrapper.featured .menu .list-h a.active i+p,
+.cover-wrapper.focus .menu .list-h a.active i+p {
+  color: #3dd9b6;
+}
+.cover-wrapper.dock .menu .list-h a.active img+p,
+.cover-wrapper.featured .menu .list-h a.active img+p,
+.cover-wrapper.focus .menu .list-h a.active img+p {
+  color: var(--color-text);
+}
+.cover-wrapper.dock .menu .list-h a:hover,
+.cover-wrapper.featured .menu .list-h a:hover,
+.cover-wrapper.focus .menu .list-h a:hover {
+  background: var(--color-card);
+}
+.cover-wrapper.dock .top {
+  margin-bottom: 48px;
+}
+.cover-wrapper.dock .menu {
+  background: rgba(255,255,255,0.5);
+  position: absolute;
+  bottom: 0;
+  max-width: 100%;
+}
+.cover-wrapper.dock .menu .list-h {
+  flex-wrap: nowrap;
+  -webkit-flex-wrap: nowrap;
+  -khtml-flex-wrap: nowrap;
+  -moz-flex-wrap: nowrap;
+  -o-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  margin: 4px;
+}
+.cover-wrapper.dock .menu .list-h a+a {
+  margin-left: 4px;
+}
+@media screen and (max-width: 500px) {
+  .cover-wrapper.dock .menu .list-h {
+    overflow-x: scroll;
+  }
+  .cover-wrapper.dock .menu .list-h::-webkit-scrollbar {
+    height: 0;
+    width: 0;
+  }
+  .cover-wrapper.dock .menu .list-h::-webkit-scrollbar-track-piece {
+    background: transparent;
+  }
+  .cover-wrapper.dock .menu .list-h::-webkit-scrollbar-thumb {
+    background: #3dd9b6;
+    cursor: pointer;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+  }
+  .cover-wrapper.dock .menu .list-h::-webkit-scrollbar-thumb:hover {
+    background: #ff5722;
+  }
+}
+@supports (backdrop-filter: blur(20px)) {
+  .cover-wrapper.dock .menu {
+    background: rgba(255,255,255,0.5);
+    backdrop-filter: saturate(200%) blur(20px);
+  }
+}
+@font-face {
+  font-family: 'Arial';
+  src: url("https://unpkg.com/volantis-static@0.0.1660614606622/media/fonts/UbuntuMono/UbuntuMono-Regular.ttf");
+  font-weight: 'normal';
+  font-style: 'normal';
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Varela Round';
+  src: url("https://unpkg.com/volantis-static@0.0.1660614606622/media/fonts/VarelaRound/VarelaRound-Regular.ttf");
+  font-weight: 'normal';
+  font-style: 'normal';
+  font-display: swap;
+}
+.l_header {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  width: 100%;
+  height: 64px;
+  background: var(--color-card);
+  box-shadow: 0 1px 2px 0px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0 1px 2px 0px rgba(0,0,0,0.1);
+}
+.l_header.auto {
+  transition: opacity 0.4s ease;
+  -webkit-transition: opacity 0.4s ease;
+  -khtml-transition: opacity 0.4s ease;
+  -moz-transition: opacity 0.4s ease;
+  -o-transition: opacity 0.4s ease;
+  -ms-transition: opacity 0.4s ease;
+  visibility: hidden;
+}
+.l_header.auto.show {
+  opacity: 1 !important;
+  -webkit-opacity: 1 !important;
+  -moz-opacity: 1 !important;
+  visibility: visible;
+}
+.l_header .container {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+.l_header #wrapper {
+  height: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.l_header #wrapper .nav-main,
+.l_header #wrapper .nav-sub {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  flex-wrap: nowrap;
+  -webkit-flex-wrap: nowrap;
+  -khtml-flex-wrap: nowrap;
+  -moz-flex-wrap: nowrap;
+  -o-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  justify-content: space-between;
+  -webkit-justify-content: space-between;
+  -khtml-justify-content: space-between;
+  -moz-justify-content: space-between;
+  -o-justify-content: space-between;
+  -ms-justify-content: space-between;
+  align-items: center;
+}
+.l_header #wrapper .nav-main {
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+.l_header #wrapper.sub .nav-main {
+  transform: translateY(-64px);
+  -webkit-transform: translateY(-64px);
+  -khtml-transform: translateY(-64px);
+  -moz-transform: translateY(-64px);
+  -o-transform: translateY(-64px);
+  -ms-transform: translateY(-64px);
+}
+.l_header #wrapper .nav-sub {
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+  opacity: 0;
+  -webkit-opacity: 0;
+  -moz-opacity: 0;
+  height: 64px;
+  width: calc(100% - 2 * 16px);
+  position: absolute;
+}
+.l_header #wrapper .nav-sub ::-webkit-scrollbar {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+}
+@media screen and (min-width: 2048px) {
+  .l_header #wrapper .nav-sub {
+    max-width: 55vw;
+    margin: auto;
+  }
+}
+.l_header #wrapper.sub .nav-sub {
+  opacity: 1;
+  -webkit-opacity: 1;
+  -moz-opacity: 1;
+}
+.l_header #wrapper .title {
+  position: relative;
+  color: var(--color-text);
+  padding-left: 24px;
+  max-height: 64px;
+}
+.l_header #wrapper .nav-main .title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  line-height: 64px;
+  padding: 0 24px;
+  font-size: 1.25rem;
+  font-family: "Varela Round", "PingFang SC", "Microsoft YaHei", Helvetica, Arial, Helvetica, monospace;
+}
+.l_header #wrapper .nav-main .title img {
+  height: 64px;
+}
+.l_header .nav-sub {
+  max-width: 1112px;
+  margin: auto;
+}
+.l_header .nav-sub .title {
+  font-weight: bold;
+  font-family: UbuntuMono, "Varela Round", "PingFang SC", "Microsoft YaHei", Helvetica, Arial, Menlo, Monaco, monospace, sans-serif;
+  line-height: 1.2;
+  max-height: 64px;
+  white-space: normal;
+  flex-shrink: 1;
+}
+.l_header .switcher {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+  line-height: 64px;
+  align-items: center;
+}
+.l_header .switcher .s-toc {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+}
+@media screen and (max-width: 768px) {
+  .l_header .switcher .s-toc {
+    display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+    display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+    display: -ms-flexbox /* TWEENER - IE 10 */;
+    display: -webkit-flex /* NEW - Chrome */;
+    display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+    display: flex;
+  }
+}
+.l_header .switcher >li {
+  height: 48px;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+  margin: 2px;
+}
+@media screen and (max-width: 500px) {
+  .l_header .switcher >li {
+    margin: 0 1px;
+    height: 48px;
+  }
+}
+.l_header .switcher >li >a {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  justify-content: center;
+  -webkit-justify-content: center;
+  -khtml-justify-content: center;
+  -moz-justify-content: center;
+  -o-justify-content: center;
+  -ms-justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0.85em 1.1em;
+  border-radius: 100px;
+  -webkit-border-radius: 100px;
+  border: none;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+  color: #3dd9b6;
+}
+.l_header .switcher >li >a:hover {
+  border: none;
+}
+.l_header .switcher >li >a.active,
+.l_header .switcher >li >a:active {
+  border: none;
+  background: var(--color-site-bg);
+}
+@media screen and (max-width: 500px) {
+  .l_header .switcher >li >a {
+    width: 36px;
+    height: 48px;
+  }
+}
+.l_header .nav-sub .switcher {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+}
+.l_header .m_search {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  height: 64px;
+  width: 240px;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+@media screen and (max-width: 1024px) {
+  .l_header .m_search {
+    width: 44px;
+    min-width: 44px;
+  }
+  .l_header .m_search input::placeholder {
+    opacity: 0;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+  }
+  .l_header .m_search:hover {
+    width: 240px;
+  }
+  .l_header .m_search:hover input::placeholder {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@media screen and (min-width: 500px) {
+  .l_header .m_search:hover .input {
+    width: 100%;
+  }
+  .l_header .m_search:hover .input::placeholder {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+@media screen and (max-width: 500px) {
+  .l_header .m_search {
+    min-width: 0;
+  }
+  .l_header .m_search input::placeholder {
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+  }
+}
+.l_header .m_search .form {
+  position: relative;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+.l_header .m_search .icon {
+  position: absolute;
+  width: 36px;
+  left: 5px;
+  color: var(--color-meta);
+}
+@media screen and (max-width: 500px) {
+  .l_header .m_search .icon {
+    display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+    display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+    display: none;
+  }
+}
+.l_header .m_search .input {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  line-height: 1.3;
+  width: 100%;
+  color: var(--color-text);
+  background: #fafafa;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  padding-left: 40px;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border: none;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+@media screen and (min-width: 500px) {
+  .l_header .m_search .input:focus {
+    box-shadow: 0 4px 8px 0px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 4px 8px 0px rgba(0,0,0,0.1);
+  }
+}
+@media screen and (max-width: 500px) {
+  .l_header .m_search .input {
+    background: var(--color-block);
+    padding-left: 8px;
+    border: none;
+  }
+  .l_header .m_search .input:hover,
+  .l_header .m_search .input:focus {
+    border: none;
+  }
+}
+@media (max-width: 500px) {
+  .l_header .m_search {
+    left: 0;
+    width: 0;
+    overflow: hidden;
+    position: absolute;
+    background: #fff;
+    transition: all 0.28s ease;
+    -webkit-transition: all 0.28s ease;
+    -khtml-transition: all 0.28s ease;
+    -moz-transition: all 0.28s ease;
+    -o-transition: all 0.28s ease;
+    -ms-transition: all 0.28s ease;
+  }
+  .l_header .m_search .input {
+    border-radius: 32px;
+    -webkit-border-radius: 32px;
+    margin-left: 16px;
+    padding-left: 16px;
+  }
+  .l_header.z_search-open .m_search {
+    width: 100%;
+  }
+  .l_header.z_search-open .m_search .input {
+    width: calc(100% - 120px);
+  }
+}
+ul.m-pc >li>a {
+  color: inherit;
+  border-bottom: 2px solid transparent;
+}
+ul.m-pc >li>a:active,
+ul.m-pc >li>a.active {
+  border-bottom: 2px solid #3dd9b6;
+}
+ul.m-pc li:hover >ul.list-v,
+ul.list-v li:hover >ul.list-v {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+}
+ul.nav-list-h {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: -ms-flexbox /* TWEENER - IE 10 */;
+  display: -webkit-flex /* NEW - Chrome */;
+  display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+  display: flex;
+  align-items: stretch;
+}
+ul.nav-list-h>li {
+  position: relative;
+  justify-content: center;
+  -webkit-justify-content: center;
+  -khtml-justify-content: center;
+  -moz-justify-content: center;
+  -o-justify-content: center;
+  -ms-justify-content: center;
+  height: 100%;
+  line-height: 2.4;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+ul.nav-list-h>li >a {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 600;
+}
+ul.list-v {
+  z-index: 1;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+  position: absolute;
+  background: var(--color-card);
+  box-shadow: 0 2px 4px 0px rgba(0,0,0,0.08), 0 4px 8px 0px rgba(0,0,0,0.08), 0 8px 16px 0px rgba(0,0,0,0.08);
+  -webkit-box-shadow: 0 2px 4px 0px rgba(0,0,0,0.08), 0 4px 8px 0px rgba(0,0,0,0.08), 0 8px 16px 0px rgba(0,0,0,0.08);
+  margin-top: -6px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  padding: 8px 0;
+}
+ul.list-v.show {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+}
+ul.list-v hr {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+ul.list-v >li {
+  white-space: nowrap;
+  word-break: keep-all;
+}
+ul.list-v >li.header {
+  font-size: 0.78125rem;
+  font-weight: bold;
+  line-height: 2em;
+  color: var(--color-meta);
+  margin: 8px 16px 4px;
+}
+ul.list-v >li.header i {
+  margin-right: 8px;
+}
+ul.list-v >li ul {
+  margin-left: 0;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+  margin-top: -40px;
+}
+ul.list-v .aplayer-container {
+  min-height: 64px;
+  padding: 6px 16px;
+}
+ul.list-v >li>a {
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  color: var(--color-list);
+  font-size: 0.875rem;
+  font-weight: bold;
+  line-height: 36px;
+  padding: 0 20px 0 16px;
+  text-overflow: ellipsis;
+  margin: 0 4px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+@media screen and (max-width: 1024px) {
+  ul.list-v >li>a {
+    line-height: 40px;
+  }
+}
+ul.list-v >li>a >i {
+  margin-right: 8px;
+}
+ul.list-v >li>a:active,
+ul.list-v >li>a.active {
+  color: var(--color-list-hl);
+}
+ul.list-v >li>a:hover {
+  color: var(--color-list-hl);
+  background: var(--color-site-bg);
+}
+.l_header .menu >ul>li>a {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: block;
+  padding: 0 8px;
+}
+.l_header .menu >ul>li>a >i {
+  margin-right: 4px;
+}
+.l_header ul.nav-list-h>li {
+  color: var(--color-list);
+  line-height: 64px;
+}
+.l_header ul.nav-list-h>li >a {
+  max-height: 64px;
+  overflow: hidden;
+  color: inherit;
+}
+.l_header ul.nav-list-h>li >a:active,
+.l_header ul.nav-list-h>li >a.active {
+  color: #3dd9b6;
+}
+.l_header ul.nav-list-h>li:hover>a {
+  color: var(--color-list-hl);
+}
+.l_header ul.nav-list-h>li i.music {
+  animation: rotate-effect 1.5s linear infinite;
+  -webkit-animation: rotate-effect 1.5s linear infinite;
+  -khtml-animation: rotate-effect 1.5s linear infinite;
+  -moz-animation: rotate-effect 1.5s linear infinite;
+  -o-animation: rotate-effect 1.5s linear infinite;
+  -ms-animation: rotate-effect 1.5s linear infinite;
+}
+@-moz-keyframes rotate-effect {
+  0% {
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
+    -khtml-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+  }
+  25% {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -khtml-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -khtml-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -khtml-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -khtml-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes rotate-effect {
+  0% {
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
+    -khtml-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+  }
+  25% {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -khtml-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -khtml-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -khtml-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -khtml-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+@-o-keyframes rotate-effect {
+  0% {
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
+    -khtml-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+  }
+  25% {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -khtml-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -khtml-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -khtml-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -khtml-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+@keyframes rotate-effect {
+  0% {
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
+    -khtml-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+  }
+  25% {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -khtml-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -khtml-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -khtml-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -khtml-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+.menu-phone li ul.list-v {
+  right: calc(100% - 0.5 * 16px);
+}
+.menu-phone li ul.list-v ul {
+  right: calc(100% - 0.5 * 16px);
+}
+#wrapper {
+  max-width: 1112px;
+  margin: auto;
+}
+@media screen and (min-width: 2048px) {
+  #wrapper {
+    max-width: 55vw;
+  }
+}
+#wrapper .menu {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1 1;
+  -ms-flex: 1 1;
+  flex: 1 1;
+  margin: 0 16px 0 0;
+}
+#wrapper .menu .list-v ul {
+  left: calc(100% - 0.5 * 16px);
+}
+.menu-phone {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+  margin-top: 16px;
+  right: 8px;
+  transition: all 0.28s ease;
+  -webkit-transition: all 0.28s ease;
+  -khtml-transition: all 0.28s ease;
+  -moz-transition: all 0.28s ease;
+  -o-transition: all 0.28s ease;
+  -ms-transition: all 0.28s ease;
+}
+.menu-phone ul {
+  right: calc(100% - 0.5 * 16px);
+}
+@media screen and (max-width: 500px) {
+  .menu-phone {
+    display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+    display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+    display: block;
+  }
+}
+.l_header {
+  max-width: 65vw;
+  left: calc((100% - 65vw) * 0.5);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+@media screen and (max-width: 2048px) {
+  .l_header {
+    max-width: 1144px;
+    left: calc((100% - 1144px) * 0.5);
+  }
+}
+@media screen and (max-width: 1144px) {
+  .l_header {
+    left: 0;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    max-width: 100%;
+  }
+}
+@media screen and (max-width: 500px) {
+  .l_header .container {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .l_header #wrapper .nav-main .title {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .l_header #wrapper .nav-sub {
+    width: 100%;
+  }
+  .l_header #wrapper .nav-sub .title {
+    overflow-y: scroll;
+    margin-top: 2px;
+    padding: 8px 16px;
+  }
+  .l_header #wrapper .switcher {
+    display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+    display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+    display: -ms-flexbox /* TWEENER - IE 10 */;
+    display: -webkit-flex /* NEW - Chrome */;
+    display: flex /* NEW, Spec - Opera 12.1, Firefox 20+ */;
+    display: flex;
+    margin-right: 8px;
+  }
+  .l_header .menu {
+    display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+    display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+    display: none;
+  }
+}
+@media screen and (max-width: 500px) {
+  .list-v li {
+    max-width: 270px;
+  }
+}
+#u-search {
+  display: -webkit-box /* OLD - iOS 6-, Safari 3.1-6 */;
+  display: -moz-box /* OLD - Firefox 19- (buggy but mostly works) */;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 60px 20px;
+  z-index: 1001;
+}
+@media screen and (max-width: 680px) {
+  #u-search {
+    padding: 0px;
+  }
+}
+
+  </style>
+  <link rel="stylesheet" href="/css/style.css" media="print" onload="this.media='all';this.onload=null">
+  <noscript><link rel="stylesheet" href="/css/style.css"></noscript>
+  
+<script>
+if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMode))
+    document.write(
+	'<style>'+
+		'html{'+
+			'overflow-x: hidden !important;'+
+			'overflow-y: hidden !important;'+
+		'}'+
+		'.kill-ie{'+
+			'text-align:center;'+
+			'height: 100%;'+
+			'margin-top: 15%;'+
+			'margin-bottom: 5500%;'+
+		'}'+
+    '.kill-t{'+
+      'font-size: 2rem;'+
+    '}'+
+    '.kill-c{'+
+      'font-size: 1.2rem;'+
+    '}'+
+		'#l_header,#l_body{'+
+			'display: none;'+
+		'}'+
+	'</style>'+
+    '<div class="kill-ie">'+
+        `<span class="kill-t"><b>抱歉，您的浏览器无法访问本站</b></span><br/>`+
+        `<span class="kill-c">微软已经于2016年终止了对 Internet Explorer (IE) 10 及更早版本的支持，<br/>继续使用存在极大的安全隐患，请使用当代主流的浏览器进行访问。</span><br/>`+
+        `<a target="_blank" rel="noopener" href="https://blogs.windows.com/windowsexperience/2021/05/19/the-future-of-internet-explorer-on-windows-10-is-in-microsoft-edge/"><strong>了解详情 ></strong></a>`+
+    '</div>');
+</script>
+
+
+<noscript>
+	<style>
+		html{
+			overflow-x: hidden !important;
+			overflow-y: hidden !important;
+		}
+		.kill-noscript{
+			text-align:center;
+			height: 100%;
+			margin-top: 15%;
+			margin-bottom: 5500%;
+		}
+    .kill-t{
+      font-size: 2rem;
+    }
+    .kill-c{
+      font-size: 1.2rem;
+    }
+		#l_header,#l_body{
+			display: none;
+		}
+	</style>
+    <div class="kill-noscript">
+        <span class="kill-t"><b>抱歉，您的浏览器无法访问本站</b></span><br/>
+        <span class="kill-c">本页面需要浏览器支持（启用）JavaScript</span><br/>
+        <a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=启用JavaScript"><strong>了解详情 ></strong></a>
+    </div>
+</noscript>
+
+
+  <script>
+  /************这个文件存放不需要重载的全局变量和全局函数*********/
+  window.volantis = {}; // volantis 全局变量
+  volantis.debug = "env"; // 调试模式
+  volantis.dom = {}; // 页面Dom see: /source/js/app.js etc.
+  /******************** volantis.dom.$ ********************************/
+  // 注：这里没有选择器，也没有forEach一次只处理一个dom，这里重新封装主题常用的dom方法，返回的是dom对象，对象包含了以下方法，同时保留dom的原生API
+  function volantisDom(ele) {
+    if (!ele) ele = document.createElement("div")
+    this.ele = ele;
+    // ==============================================================
+    this.ele.find = (c) => {
+      let q = this.ele.querySelector(c)
+      if (q)
+        return new volantisDom(q)
+    }
+    // ==============================================================
+    this.ele.hasClass = (c) => {
+      return this.ele.className.match(new RegExp('(\\s|^)' + c + '(\\s|$)'));
+    }
+    this.ele.addClass = (c) => {
+      this.ele.classList.add(c);
+      return this.ele
+    }
+    this.ele.removeClass = (c) => {
+      this.ele.classList.remove(c);
+      return this.ele
+    }
+    this.ele.toggleClass = (c) => {
+      if (this.ele.hasClass(c)) {
+        this.ele.removeClass(c)
+      } else {
+        this.ele.addClass(c)
+      }
+      return this.ele
+    }
+    // ==============================================================
+    this.ele.on = (c, f) => {
+      this.ele.addEventListener(c, f, false)
+      return this.ele
+    }
+    this.ele.click = (f, r) => {
+      this.ele.on("click", f, r)
+      return this.ele
+    }
+    this.ele.scroll = (f, r) => {
+      this.ele.on("scroll", f, r)
+      return this.ele
+    }
+    // ==============================================================
+    this.ele.html = (c) => {
+      // if(c=== undefined){
+      //   return this.ele.innerHTML
+      // }else{
+      this.ele.innerHTML = c
+      return this.ele
+      // }
+    }
+    // ==============================================================
+    this.ele.hide = (c) => {
+      this.ele.style.display = "none"
+      return this.ele
+    }
+    this.ele.show = (c) => {
+      this.ele.style.display = "block"
+      return this.ele
+    }
+    // ==============================================================
+    return this.ele
+  }
+  volantis.dom.$ = (ele) => {
+    return !!ele ? new volantisDom(ele) : null;
+  }
+  /******************** RunItem ********************************/
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          volantis.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+  /******************** RightMenu ********************************/
+  // volantis.rightmenu.handle(callBack[,"callBackName"]) 外部菜单项控制
+  // 可在 volantis.mouseEvent 处获取右键事件
+  volantis.rightmenu = {};
+  volantis.rightmenu.method = {
+    handle: new RunItem(),
+  }
+  volantis.rightmenu = Object.assign(volantis.rightmenu, {
+    handle: volantis.rightmenu.method.handle.push,
+  });
+  /********************  Dark Mode  ********************************/
+  // /layout/_partial/scripts/darkmode.ejs
+  // volantis.dark.mode 当前模式 dark or light
+  // volantis.dark.toggle() 暗黑模式触发器
+  // volantis.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  volantis.dark = {};
+  volantis.dark.method = {
+    toggle: new RunItem(),
+  };
+  volantis.dark = Object.assign(volantis.dark, {
+    push: volantis.dark.method.toggle.push,
+  });
+  /********************  Message  ********************************/
+  // VolantisApp.message
+  /********************  isMobile  ********************************/
+  // /source/js/app.js
+  // volantis.isMobile
+  // volantis.isMobileOld
+  /********************脚本动态加载函数********************************/
+  // volantis.js(src, cb)  cb 可以传入onload回调函数 或者 JSON对象 例如: volantis.js("src", ()=>{}) 或 volantis.js("src", {defer:true,onload:()=>{}})
+  // volantis.css(src)
+
+  // 返回Promise对象，如下方法同步加载资源，这利于处理文件资源之间的依赖关系，例如：APlayer 需要在 MetingJS 之前加载
+  // (async () => {
+  //     await volantis.js("...theme.plugins.aplayer.js.aplayer...")
+  //     await volantis.js("...theme.plugins.aplayer.js.meting...")
+  // })();
+
+  // 已经加入了setTimeout
+  volantis.js = (src, cb) => {
+    return new Promise(resolve => {
+      setTimeout(function () {
+        var HEAD = document.getElementsByTagName("head")[0] || document.documentElement;
+        var script = document.createElement("script");
+        script.setAttribute("type", "text/javascript");
+        if (cb) {
+          if (JSON.stringify(cb)) {
+            for (let p in cb) {
+              if (p == "onload") {
+                script[p] = () => {
+                  cb[p]()
+                  resolve()
+                }
+              } else {
+                script[p] = cb[p]
+                script.onload = resolve
+              }
+            }
+          } else {
+            script.onload = () => {
+              cb()
+              resolve()
+            };
+          }
+        } else {
+          script.onload = resolve
+        }
+        script.setAttribute("src", src);
+        HEAD.appendChild(script);
+      });
+    });
+  }
+  volantis.css = (src) => {
+    return new Promise(resolve => {
+      setTimeout(function () {
+        var link = document.createElement('link');
+        link.rel = "stylesheet";
+        link.href = src;
+        link.onload = resolve;
+        document.getElementsByTagName("head")[0].appendChild(link);
+      });
+    });
+  }
+  /********************按需加载的插件********************************/
+  // volantis.import.jQuery().then(()=>{})
+  volantis.import = {
+    jQuery: () => {
+      if (typeof jQuery == "undefined") {
+        return volantis.js("https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js")
+      } else {
+        return new Promise(resolve => {
+          resolve()
+        });
+      }
+    }
+  }
+  /********************** requestAnimationFrame ********************************/
+  // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+  // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+  volantis.requestAnimationFrame = (fn) => {
+    if (!window.requestAnimationFrame) {
+      window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+    }
+    window.requestAnimationFrame(fn)
+  }
+  /************************ layoutHelper *****************************************/
+  volantis.layoutHelper = (helper, html, opt) => {
+    opt = Object.assign({ clean: false}, opt)
+    function myhelper(helper, html, clean) {
+      volantis.tempDiv = document.createElement("div");
+      volantis.tempDiv.innerHTML = html;
+      let layoutHelper = document.querySelector("#layoutHelper-" + helper)
+      if (layoutHelper) {
+        if (clean) {
+          layoutHelper.innerHTML = ""
+        }
+        layoutHelper.append(volantis.tempDiv);
+      }
+    }
+    myhelper(helper, html, opt.clean)
+  }
+  /****************************** 滚动事件处理 ****************************************/
+  volantis.scroll = {
+    engine: new RunItem(),
+    unengine: new RunItem(),
+  };
+  volantis.scroll = Object.assign(volantis.scroll, {
+    push: volantis.scroll.engine.push,
+  });
+  // 滚动条距离顶部的距离
+  volantis.scroll.getScrollTop = () => {
+    let scrollPos;
+    if (window.pageYOffset) {
+      scrollPos = window.pageYOffset;
+    } else if (document.compatMode && document.compatMode != 'BackCompat') {
+      scrollPos = document.documentElement.scrollTop;
+    } else if (document.body) {
+      scrollPos = document.body.scrollTop;
+    }
+    return scrollPos;
+  }
+  volantis.scroll.scrollHeight = function () {
+    return Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+    )
+  }
+  volantis.scroll.offsetHeight = function () {
+    return Math.max(
+      document.body.offsetHeight,
+      document.documentElement.offsetHeight,
+      document.body.clientHeight,
+      document.documentElement.clientHeight
+    )
+  }
+  volantis.scroll.progress = function () {
+    return volantis.scroll.getScrollTop() / (volantis.scroll.scrollHeight() - volantis.scroll.offsetHeight())
+  }
+  // 使用 requestAnimationFrame 处理滚动事件
+  // `volantis.scroll.del` 中存储了一个数值, 该数值检测一定时间间隔内滚动条滚动的位移, 数值的检测频率是浏览器的刷新频率. 数值为正数时, 表示向下滚动. 数值为负数时, 表示向上滚动.
+  volantis.scroll.handleScrollEvents = () => {
+    volantis.scroll.lastScrollTop = volantis.scroll.getScrollTop()
+    function loop() {
+      const scrollTop = volantis.scroll.getScrollTop();
+      if (volantis.scroll.lastScrollTop !== scrollTop) {
+        volantis.scroll.del = scrollTop - volantis.scroll.lastScrollTop;
+        volantis.scroll.lastScrollTop = scrollTop;
+        // if (volantis.scroll.del > 0) {
+        //   console.log("向下滚动");
+        // } else {
+        //   console.log("向上滚动");
+        // }
+        // 注销过期的unengine未滚动事件
+        volantis.scroll.unengine.list = []
+        volantis.scroll.engine.start();
+      } else {
+        volantis.scroll.unengine.start();
+      }
+      volantis.requestAnimationFrame(loop)
+    }
+    volantis.requestAnimationFrame(loop)
+  }
+  volantis.scroll.handleScrollEvents()
+  volantis.scroll.ele = null;
+  // 触发页面滚动至目标元素位置
+  volantis.scroll.to = (ele, option = {}) => {
+    if (!ele) return;
+    volantis.scroll.ele = ele;
+    // 默认配置
+    opt = {
+      top: ele.getBoundingClientRect().top + document.documentElement.scrollTop,
+      behavior: "smooth"
+    }
+    // 定义配置
+    if ("top" in option) {
+      opt.top = option.top
+    }
+    if ("behavior" in option) {
+      opt.behavior = option.behavior
+    }
+    if ("addTop" in option) {
+      opt.top += option.addTop
+    }
+    if (!("observerDic" in option)) {
+      option.observerDic = 100
+    }
+    // 滚动
+    window.scrollTo(opt);
+    // 监视器
+    // 监视并矫正元素滚动到指定位置
+    // 用于处理 lazyload 引起的 cls 导致的定位失败问题
+    // option.observer = false
+    if (option.observer) {
+      setTimeout(() => {
+        if (volantis.scroll.ele != ele) {
+          return
+        }
+        volantis.scroll.unengine.push(() => {
+          let me = ele.getBoundingClientRect().top
+          if (!(me >= -option.observerDic && me <= option.observerDic)) {
+            volantis.scroll.to(ele, option)
+          }
+          volantis.scroll.unengine.remove("unengineObserver")
+        }, "unengineObserver")
+      }, 1000)
+    }
+  }
+  /********************** Content Visibility ********************************/
+  // 见 source/css/first.styl 如果遇到任何问题 删除 .post-story 即可
+  // 一个元素被声明 content-visibility 属性后 如果元素不在 viewport 中 浏览器不会计算其后代元素样式和属性 从而节省 Style & Layout 耗时
+  // content-visibility 的副作用: 锚点失效 等等(实验初期 暂不明确), 使用此方法清除样式
+  volantis.cleanContentVisibility = () => {
+    if (document.querySelector(".post-story")) {
+      console.log("cleanContentVisibility");
+      document.querySelectorAll(".post-story").forEach(e => {
+        e.classList.remove("post-story")
+      })
+    }
+  }
+  /******************************************************************************/
+  /******************************************************************************/
+  /******************************************************************************/
+  //图像加载出错时的处理
+  function errorImgAvatar(img) {
+    img.src = "https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/avatar/round/3442075.svg";
+    img.onerror = null;
+  }
+  function errorImgCover(img) {
+    img.src = "https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/cover/76b86c0226ffd.svg";
+    img.onerror = null;
+  }
+  /******************************************************************************/
+</script>
+
+<script>
+  window.pdata={}
+  pdata.ispage=true;
+  pdata.commentPath="";
+  pdata.commentPlaceholder="";
+  pdata.commentConfig={};
+  volantis.GLOBAL_CONFIG ={
+    root: '/',
+    debug: "env",
+    default: {"avatar":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/avatar/round/3442075.svg","link":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/link/8f277b4ee0ecd.svg","cover":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/cover/76b86c0226ffd.svg","image":"https://unpkg.com/volantis-static@0.0.1660614606622/media/placeholder/image/2659360.svg"},
+    lastupdate: new Date(1757407408396),
+    cdn: {
+      izitoast_css: 'https://cdn.bootcdn.net/ajax/libs/izitoast/1.4.0/css/iziToast.min.css',
+      izitoast_js: 'https://cdn.bootcdn.net/ajax/libs/izitoast/1.4.0/js/iziToast.min.js',
+      fancybox_css: 'https://cdn.bootcdn.net/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.min.css',
+      fancybox_js: 'https://cdn.bootcdn.net/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.umd.min.js'
+    },
+    sidebar: {
+      for_page: ["blogger","webinfo","lastupdate"],
+      for_post: ["toc"],
+      webinfo: {
+        lastupd: {
+          enable: true,
+          friendlyShow: true
+        },
+        runtime: {
+          data: "2020/03/01",
+          unit: "天"
+        }
+      }
+    },
+    plugins: {
+      message: {"enable":true,"icon":{"default":"fa-solid fa-info-circle light-blue","quection":"fa-solid fa-question-circle light-blue"},"time":{"default":5000,"quection":20000},"position":"topRight","transitionIn":"bounceInLeft","transitionOut":"fadeOutRight","titleColor":"var(--color-text)","messageColor":"var(--color-text)","backgroundColor":"var(--color-card)","zindex":2147483647,"copyright":{"enable":true,"title":"知识共享许可协议","message":"请遵守 CC BY-NC-SA 4.0 协议。","icon":"far fa-copyright light-blue"},"aplayer":{"enable":true,"play":"fa-solid fa-play","pause":"fa-solid fa-pause"},"rightmenu":{"enable":true,"notice":true}},
+      
+      
+    },
+    search: {
+      
+
+      
+        dataPath: (("/" || "/").endsWith("/") ? "/" || "/" : "//" || "/") + "content.json",
+      
+
+      
+    },
+    languages: {
+      
+        search: {
+          hits_empty: "找不到您查询的内容：${query}",
+          hits_stats: "找到 ${hits} 条结果，用时 ${time} 毫秒",
+        }
+      
+    }
+  }
+</script>
+  <!-- import head_end begin -->
+  <!-- import head_end end -->
+  <!-- Custom Files headEnd begin-->
+  
+  <!-- Custom Files headEnd end-->
+</head>
+  <body itemscope itemtype="https://schema.org.cn/WebPage">
+    <!-- import body_begin begin-->
+    <!-- import body_begin end-->
+    <!-- Custom Files bodyBegin begin-->
+    
+    <!-- Custom Files bodyBegin end-->
+    <header itemscope itemtype="https://schema.org.cn/WPHeader" id="l_header" class="l_header auto shadow floatable blur show" style='opacity: 0' >
+  <div class='container'>
+  <div id='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h m-phone'>
+        <li><a id="s-comment" class="fa-solid fa-comments fa-fw" target="_self" title="comment"></a></li>
+        
+          <li><a id="s-toc" class="s-toc fa-solid fa-list fa-fw" target="_self" title="toc"></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+          
+          
+        </a>
+      
+
+			<div class='menu navigation'>
+				<ul class='nav-list-h m-pc'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/" title="首页"
+                  
+                  
+                  
+                    active-action="action-home"
+                  >
+                  <i class='fa-solid fa-home fa-fw'></i>首页
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/photos/" title="相册"
+                  
+                  
+                  
+                    active-action="action-photos"
+                  >
+                  <i class='fa-solid fa-images fa-fw'></i>相册
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/friends/" title="友链"
+                  
+                  
+                  
+                    active-action="action-friends"
+                  >
+                  <i class='fa-solid fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/me/" title="关于"
+                  
+                  
+                  
+                    active-action="action-me"
+                  >
+                  <i class='fa-solid fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/pyq/" title="pyQ"
+                  
+                  
+                  
+                    active-action="action-pyq"
+                  >
+                  <i class='fa-solid fa-icons fa-fw'></i>pyQ
+                </a>
+                
+              </li>
+            
+          
+          
+				</ul>
+			</div>
+      
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fa-solid fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="Search..." />
+        </form>
+      </div>
+      
+
+			<ul class='switcher nav-list-h m-phone'>
+				
+					<li><a class="s-search fa-solid fa-search fa-fw" target="_self" title="search"></a></li>
+				
+				<li>
+          <a class="s-menu fa-solid fa-bars fa-fw" target="_self" title="menu"></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/" title="首页"
+                  
+                  
+                  
+                    active-action="action-home"
+                  >
+                  <i class='fa-solid fa-home fa-fw'></i>首页
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/photos/" title="相册"
+                  
+                  
+                  
+                    active-action="action-photos"
+                  >
+                  <i class='fa-solid fa-images fa-fw'></i>相册
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/friends/" title="友链"
+                  
+                  
+                  
+                    active-action="action-friends"
+                  >
+                  <i class='fa-solid fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/me/" title="关于"
+                  
+                  
+                  
+                    active-action="action-me"
+                  >
+                  <i class='fa-solid fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover"
+                href="/pyq/" title="pyQ"
+                  
+                  
+                  
+                    active-action="action-pyq"
+                  >
+                  <i class='fa-solid fa-icons fa-fw'></i>pyQ
+                </a>
+                
+              </li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+
+      <!-- Custom Files header begin -->
+      
+      <!-- Custom Files header end -->
+		</div>
+	</div>
+  </div>
+</header>
+
+    <div id="l_body">
+      <div id="l_cover">
+  
+</div>
+
+      <div id="safearea">
+        <div class="body-wrapper">
+          
+<div id="l_main" class=''>
+  <article itemscope itemtype="https://schema.org.cn/Article" class="article post white-box reveal md shadow floatable blur article-type-post" id="post" itemscope itemprop="blogPost">
+  <link itemprop="mainEntityOfPage" href="http://www.cvzoo.cn/2022/20220816-cs231n/">
+  <span hidden itemprop="publisher" itemscope itemtype="https://schema.org.cn/Organization">
+    <meta itemprop="name" content="莫拉维克猫屋">
+  </span>
+  <span hidden itemprop="post" itemscope itemtype="https://schema.org.cn/Post">
+    <meta itemprop="name" content="莫拉维克猫屋">
+    <meta itemprop="description" content="莫拉维克猫屋, 刘增运个人博客">
+  </span>
+  
+
+
+  
+    <span hidden>
+      <meta itemprop="image" content="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png">
+    </span>
+  
+  <div class="article-meta" id="top">
+    
+    
+    
+      <h1 class="title" itemprop="name headline">
+        粗略的cs231n学习笔记
+      </h1>
+      <div class='new-meta-box'>
+        
+          
+            
+<div class='new-meta-item author' itemprop="author" itemscope itemtype="https://schema.org.cn/Person">
+  <a itemprop="url" class='author' href="https:www.cvzoo.cn" rel="nofollow">
+    <img itemprop="image" src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250823175740985.jpg">
+    <p itemprop="name">liuzengyun</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+
+
+          
+        
+          
+            <div class="new-meta-item date" itemprop="dateCreated datePublished" datetime="2022-08-16T19:58:09+08:00">
+  <a class='notlink'>
+    <i class="fa-solid fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：2022年8月16日</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+
+
+
+          
+        
+        <!-- Custom Files topMeta begin-->
+        
+        <!-- Custom Files topMeta end-->
+      </div>
+    
+  </div>
+
+
+  <div id="layoutHelper-page-plugins"></div>
+  <div id="post-body" itemprop="articleBody">
+    <h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><h3 id="1-1-概述"><a href="#1-1-概述" class="headerlink" title="1.1 概述"></a>1.1 概述</h3><p>助教老师讲了讲课程的重要性和整体内容。</p>
+<h3 id="1-2-历史背景"><a href="#1-2-历史背景" class="headerlink" title="1.2 历史背景"></a>1.2 历史背景</h3><h3 id="1-2-1-history-of-cv"><a href="#1-2-1-history-of-cv" class="headerlink" title="1.2.1 history of cv"></a>1.2.1 history of cv</h3><p>5.4亿年前化石表明动物已经具备眼睛，物种大爆炸。</p>
+<p>现在的视觉称为了最重要的感知能力。大脑中50%的神经细胞在处理视觉信息。</p>
+<p>16世纪，第一台针孔理论相机。目前相机是最受欢迎的传感器之一。</p>
+<p>人类开始研究动物视觉：电生理学研究，猫实验，看看是啥能刺激视觉中枢。</p>
+<p>1966，麻省理工学院，视觉论文《THE SUMMER VISION PROJECT》，视觉信息被简化成简单的形状。</p>
+<p>70年代，David Marr的书《VISION》，原始草图重建。</p>
+<p>70年代，出现了广义圆柱体和图形结构，将复杂的视觉信息简单化。</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105653493.png" alt="image-20220707154317833"></p>
+<p>80年代，基于简单图形进行识别和重建任务。</p>
+<p>直接识别任务太难，先做分割任务。</p>
+<p>2006，富士相机实时面部检测。</p>
+<p>新世纪初，SIFT被提出。</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105655667.png" alt="image-20220707155733434"></p>
+<p>机器学习出现，暴露问题：过拟合、模型维度高，不好泛化。建立大型数据集ImageNet。2009开始ImageNet组织目标检测竞赛，统一量化基准。2012卷积神经网络出现，获得冠军。</p>
+<h3 id="1-3-课程介绍"><a href="#1-3-课程介绍" class="headerlink" title="1.3 课程介绍"></a>1.3 课程介绍</h3><p>聚焦于图像分类问题，基于ImageNet挑战赛。拓展到目标检测、图片摘要</p>
+<p>卷积神经网络CNN已经成为大赛的主流。2012年AlexNet出现，是一个7层的网络。2014VGG、GoogleNet。实际上CNN的雏形1998年就已经出现，LeCun大佬。后来用的多了，取决于：</p>
+<ul>
+<li>算力提升</li>
+<li>数据多了</li>
+</ul>
+<p>现在视觉任务貌似偏向了目标检测，这并不只是视觉的主要内容，实际上还有分割、分类、3D理解等。举例：</p>
+<ul>
+<li>feifei博士期间，实验：人看图半秒即可描述一段话；</li>
+<li>人看到图像上的东西会有笑的反应。</li>
+</ul>
+<p>实际上是借助了已有知识去理解了图像。说明到这种程度cv还有很长路要走。</p>
+<p>老师说他相信：CV Can Better Our Lives.</p>
+<p>本课的老师：feifei, Justin, Serena, &amp;so on</p>
+<h2 id="2-图像分类"><a href="#2-图像分类" class="headerlink" title="2 图像分类"></a>2 图像分类</h2><h3 id="2-1-数据驱动方法"><a href="#2-1-数据驱动方法" class="headerlink" title="2.1 数据驱动方法"></a>2.1 数据驱动方法</h3><p>需要的知识：Python+NumPy， Google Cloud</p>
+<h4 id="问题与挑战"><a href="#问题与挑战" class="headerlink" title="问题与挑战"></a>问题与挑战</h4><p>图像分类是cv的core task，计算机给图像分配一个标签。但是计算机只能看到一堆像素数值，面临的问题就是“语义鸿沟”。比如给目标换一个角度拍摄、换一个同类的目不同的背景信息……像素数值会发生巨大变化，人眼识别是鲁棒的，机器也要做到这样。</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105658839.png" alt="image-20220713204807961"></p>
+<h4 id="我们的任务"><a href="#我们的任务" class="headerlink" title="我们的任务"></a>我们的任务</h4><p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105700757.png" alt="image-20220713210144083"></p>
+<p>希望训练时间长，检测时间短</p>
+<h4 id="传统方法"><a href="#传统方法" class="headerlink" title="传统方法"></a>传统方法</h4><p>比如边缘检测</p>
+<h4 id="数据驱动的方法"><a href="#数据驱动的方法" class="headerlink" title="数据驱动的方法"></a>数据驱动的方法</h4><ol>
+<li>收集数据与标签</li>
+<li>训练（机器学习的过程） train</li>
+<li>在新的图上评估&#x2F;预测  predict</li>
+</ol>
+<h4 id="数据集举例"><a href="#数据集举例" class="headerlink" title="数据集举例"></a>数据集举例</h4><ul>
+<li><p>CIFAR10</p>
+<blockquote>
+<p>10类别，5w训练图像，1w测试图像。32x32 px图像</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="用于比较图像相似性的损失函数"><a href="#用于比较图像相似性的损失函数" class="headerlink" title="用于比较图像相似性的损失函数"></a>用于比较图像相似性的损失函数</h4><ul>
+<li><p>L1：曼哈顿距离</p>
+<blockquote>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105702711.png" alt="image-20220722153708921"></p>
+</blockquote>
+</li>
+<li><p>L2：欧氏距离</p>
+<blockquote>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105704889.png" alt="image-20220722155608743"></p>
+</blockquote>
+</li>
+</ul>
+<h4 id="最近邻的问题"><a href="#最近邻的问题" class="headerlink" title="最近邻的问题"></a>最近邻的问题</h4><p>不好处理数据中的噪音，所以出现了K近邻，使用多数投票，分类边界变得平滑</p>
+<h3 id="2-2-KNN"><a href="#2-2-KNN" class="headerlink" title="2.2 KNN"></a>2.2 KNN</h3><blockquote>
+<p>KNN原理：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45014385/article/details/123618841">KNN算法（一） KNN算法原理</a></p>
+<p>演示网站：<a target="_blank" rel="noopener" href="http://vision.stanford.edu/teaching/cs231n-demos/knn/">http://vision.stanford.edu/teaching/cs231n-demos/knn/</a></p>
+</blockquote>
+<p>通过重构距离函数可以把KNN泛化到不同的数据类型上</p>
+<p>L1依赖于坐标，向量的每个值有确定意义时，适合使用L1。否则可以两种都尝试一下，找到最好的。</p>
+<h4 id="超参设置"><a href="#超参设置" class="headerlink" title="超参设置"></a>超参设置</h4><ul>
+<li>idea1：所有数据选择同一个参数，K越小在训练集上性能越好，但是到测试集上需要调大K。这样就会出现过拟合，过分的贴合训练数据，降低了泛化能力。</li>
+<li>idea2：split data into train and test，选择不同参数，导致测试集很好，训练集不行了。</li>
+<li>idea3：split data into train, val and test，train用一个超参，val和test用一个超参，选择val上最好的参数用于test</li>
+<li>idea4：交叉验证，传统机器学习常见，DL不咋用</li>
+</ul>
+<blockquote>
+<p>学生提问1：val和test区别？</p>
+<p>答：val是有标签的，通过在val上测试，与标签比较，修正算法的正确率，而test是没有标签的，用于观察预测结果或者实际应用。</p>
+<p>提问2：test不能代表现实中的样本，咋办？</p>
+<p>答：数据集是独立同分布的，现实不是，所以创建数据集的时候应该考虑随机性。</p>
+</blockquote>
+<p>所以，KNN在图像分类上很少使用，原因：</p>
+<ul>
+<li>test时间长</li>
+<li>距离很难判断像素差异（不好找损失函数）</li>
+<li>维度灾难，难度指数增长</li>
+</ul>
+<blockquote>
+<p>提问：绿点和蓝点表示啥？</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105707401.png" alt="image-20220728104838507"></p>
+<p>答：代表不同类数据。维度越高，需要越多的数据点来填满空间，所以是指数倍增长。</p>
+</blockquote>
+<h3 id="2-3-线性分类"><a href="#2-3-线性分类" class="headerlink" title="2.3 线性分类"></a>2.3 线性分类</h3><p>比如：输入图像经过模块f，输出十个数中的一个，代表十个类别中的一个。</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105709496.png" alt="image-20220728110242912"></p>
+<p>深度学习的主要工作就是构建高性能的f。</p>
+<p>线性分类器：</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105712185.png" alt="image-20220802154645178"></p>
+<p>线性分类的模型简单，但是泛化能力差，只允许学习一个类型的一个模板。比如分类任务中，学习车的前脸，无法从车的侧面图判断是否是一辆车。</p>
+<p>一个二维图像，经过特征提取后映射为高维空间中的一个点，只需在高维空间将点线性分类。而在低维空间中，两类是无法线性分开的。</p>
+<h2 id="3-损失函数和优化器"><a href="#3-损失函数和优化器" class="headerlink" title="3 损失函数和优化器"></a>3 损失函数和优化器</h2><h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>来衡量我们对结果的不满意程度，当评分函数输出结果与真实结果之间差异越大，损失函数输出越大，反之越小。</p>
+<blockquote>
+<p>我们对于预测训练集数据分类标签的情况总有一些不满意的，而损失函数就能将这些不满意的程度量化。</p>
+</blockquote>
+<h4 id="多类SVM"><a href="#多类SVM" class="headerlink" title="多类SVM"></a>多类SVM</h4><p>SVM的损失函数想要SVM在正确分类上的得分始终比不正确分类上的得分高出一个边界值Δ。</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105715420.png" alt="image-20220808103615590"></p>
+<p>多类SVM“想要”正确类别的分类分数比其他不正确分类类别的分数要高，而且至少高出delta的边界值。如果其他分类分数进入了红色的区域，甚至更高，那么就开始计算损失。如果没有这些情况，损失值为0。我们的目标是找到一些权重，它们既能够让训练集中的数据样例满足这些限制，也能让总的损失值尽可能地低。</p>
+<h5 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h5><p>我们希望能向某些特定的权重<strong>W</strong>添加一些偏好，对其他权重则不添加，以此来消除模糊性。这一点是能够实现的，方法是向损失函数增加一个<strong>正则化惩罚（regularization penalty）</strong>R(W)部分。</p>
+<p>减轻模型复杂度，防止过拟合(over-fitting)。</p>
+<h4 id="Softmax"><a href="#Softmax" class="headerlink" title="Softmax"></a>Softmax</h4><p>在Softmax分类器中，函数映射$f(x_i;W)&#x3D;Wx_i$保持不变，但将这些评分值视为每个分类的未归一化的对数概率，并且将<em>折叶损失（hinge loss）</em>替换为<strong>交叉熵损失</strong>（<strong>cross-entropy loss）</strong>。公式如下：</p>
+<p>$$<br>L_i&#x3D;−f{y_i}+log(∑je^{f_j})<br>$$</p>
+<h4 id="SVM和Softmax的比较"><a href="#SVM和Softmax的比较" class="headerlink" title="SVM和Softmax的比较"></a>SVM和Softmax的比较</h4><p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105719124.jpeg" alt="img"></p>
+<p><strong>Softmax分类器为每个分类提供了“可能性”</strong>：SVM的计算是无标定的，而且难以针对所有分类的评分值给出直观解释。Softmax分类器则不同，它允许我们计算出对于所有分类标签的可能性。举个例子，针对给出的图像，SVM分类器可能给你的是一个[12.5, 0.6, -23.0]对应分类“猫”，“狗”，“船”。而softmax分类器可以计算出这三个标签的”可能性“是[0.9, 0.09, 0.01]，这就让你能看出对于不同分类准确性的把握。</p>
+<h3 id="优化器"><a href="#优化器" class="headerlink" title="优化器"></a>优化器</h3><h4 id="最优化"><a href="#最优化" class="headerlink" title="最优化"></a>最优化</h4><p>损失函数可以量化某个具体权重集<strong>W</strong>的质量。而最优化的目标就是找到能够最小化损失函数值的<strong>W</strong>的过程 。</p>
+<p>参数更新需要有技巧地设置<strong>步长</strong>。也叫学习率。如果步长太小，进度稳定但是缓慢，如果步长太大，进度快但是可能有风险。</p>
+<ul>
+<li><p><strong>随机搜索：Acc&#x3D;15.5%</strong></p>
+<p>随机尝试很多不同的权重，然后看其中哪个最好。每走一步都尝试几个随机方向，如果某个方向是向山下的，就向该方向走一步。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假设X_train的每一列都是一个数据样本（比如3073 x 50000）</span></span><br><span class="line"><span class="comment"># 假设Y_train是数据样本的类别标签（比如一个长50000的一维数组）</span></span><br><span class="line"><span class="comment"># 假设函数L对损失函数进行评价</span></span><br><span class="line"></span><br><span class="line">bestloss = <span class="built_in">float</span>(<span class="string">&quot;inf&quot;</span>) <span class="comment"># Python assigns the highest possible float value</span></span><br><span class="line"><span class="keyword">for</span> num <span class="keyword">in</span> xrange(<span class="number">1000</span>):</span><br><span class="line">  W = np.random.randn(<span class="number">10</span>, <span class="number">3073</span>) * <span class="number">0.0001</span> <span class="comment"># generate random parameters</span></span><br><span class="line">  loss = L(X_train, Y_train, W) <span class="comment"># get the loss over the entire training set</span></span><br><span class="line">  <span class="keyword">if</span> loss &lt; bestloss: <span class="comment"># keep track of the best solution</span></span><br><span class="line">    bestloss = loss</span><br><span class="line">    bestW = W</span><br><span class="line">  <span class="built_in">print</span> <span class="string">&#x27;in attempt %d the loss was %f, best %f&#x27;</span> % (num, loss, bestloss)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>随即本地搜索：Acc&#x3D;21.4%</strong></p>
+<p>从一个随机W开始，然后生成一个随机的扰动δW ，只有当W+δW的损失值变低，我们才会更新。这个过程的具体代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">W = np.random.randn(<span class="number">10</span>, <span class="number">3073</span>) * <span class="number">0.001</span> <span class="comment"># 生成随机初始W</span></span><br><span class="line">bestloss = <span class="built_in">float</span>(<span class="string">&quot;inf&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1000</span>):</span><br><span class="line">  step_size = <span class="number">0.0001</span></span><br><span class="line">  Wtry = W + np.random.randn(<span class="number">10</span>, <span class="number">3073</span>) * step_size</span><br><span class="line">  loss = L(Xtr_cols, Ytr, Wtry)</span><br><span class="line">  <span class="keyword">if</span> loss &lt; bestloss:</span><br><span class="line">    W = Wtry</span><br><span class="line">    bestloss = loss</span><br><span class="line">  <span class="built_in">print</span> <span class="string">&#x27;iter %d loss is %f&#x27;</span> % (i, bestloss)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>跟随梯度</strong></p>
+<p>前两个策略中，我们是尝试在权重空间中找到一个方向，沿着该方向能降低损失函数的损失值。其实不需要随机寻找方向，因为可以直接计算出最好的方向，这就是从数学上计算出最陡峭的方向。这个方向就是损失函数的<strong>梯度（gradient）</strong>。在蒙眼徒步者的比喻中，这个方法就好比是感受我们脚下山体的倾斜程度，然后向着最陡峭的下降方向下山。</p>
+</li>
+</ul>
+<h4 id="梯度下降"><a href="#梯度下降" class="headerlink" title="梯度下降"></a>梯度下降</h4><p>现在可以计算损失函数的梯度了，程序重复地计算梯度然后对参数进行更新，这一过程称为<em>梯度下降</em>，他的<strong>普通</strong>版本是这样的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 普通的梯度下降</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">  weights_grad = evaluate_gradient(loss_fun, data, weights)</span><br><span class="line">  weights += - step_size * weights_grad <span class="comment"># 进行梯度更新</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="随机梯度下降："><a href="#随机梯度下降：" class="headerlink" title="随机梯度下降："></a>随机梯度下降：</h5><p>随机采样一部分训练集样本，计算梯度并实现下降过程。</p>
+<h2 id="4-反向传播与神经网络"><a href="#4-反向传播与神经网络" class="headerlink" title="4 反向传播与神经网络"></a>4 反向传播与神经网络</h2><h3 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h3><p>反向传播是利用<strong>链式法则</strong>递归计算表达式的梯度的方法。</p>
+<h4 id="导数与梯度"><a href="#导数与梯度" class="headerlink" title="导数与梯度"></a>导数与梯度</h4><p>$$<br>f(x,y)&#x3D;xy \to \frac {df}{dx}&#x3D;y \quad \frac {df}{dy}&#x3D;x<br>$$</p>
+<p>牢记这些导数的意义：函数变量在某个点周围的极小区域内变化，而导数就是变量变化导致的函数在该方向上的变化率。</p>
+<p>梯度∇f是偏导数的向量，所以有$∇f(x)&#x3D;[\frac{∂f}{∂x},\frac{∂f}{∂y}]$</p>
+<h4 id="链式法则"><a href="#链式法则" class="headerlink" title="链式法则"></a>链式法则</h4><p>复合函数求导<br>$$<br>\displaystyle\frac{\partial f}{\partial x}&#x3D;\frac{\partial f}{\partial q}\frac{\partial q}{\partial x}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置输入值</span></span><br><span class="line">x = -<span class="number">2</span>; y = <span class="number">5</span>; z = -<span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行前向传播</span></span><br><span class="line">q = x + y <span class="comment"># q becomes 3</span></span><br><span class="line">f = q * z <span class="comment"># f becomes -12</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行反向传播:</span></span><br><span class="line"><span class="comment"># 首先回传到 f = q * z</span></span><br><span class="line">dfdz = q <span class="comment"># df/dz = q, 所以关于z的梯度是3</span></span><br><span class="line">dfdq = z <span class="comment"># df/dq = z, 所以关于q的梯度是-4</span></span><br><span class="line"><span class="comment"># 现在回传到q = x + y</span></span><br><span class="line">dfdx = <span class="number">1.0</span> * dfdq <span class="comment"># dq/dx = 1. 这里的乘法是因为链式法则</span></span><br><span class="line">dfdy = <span class="number">1.0</span> * dfdq <span class="comment"># dq/dy = 1</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>前向传播</strong>从输入计算到输出（绿色），<strong>反向传播</strong>从尾部开始，根据链式法则递归地向前计算梯度（显示为红色），一直到网络的输入端。可以认为，梯度是从计算链路中回流。</p>
+<p>sigmoid函数：$\sigma(x)&#x3D;\frac{1}{1+e^{-x}}$</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/213da7f66594510b45989bd134fc2d8b_r.jpg" alt="img"></p>
+<h4 id="一个计算实例"><a href="#一个计算实例" class="headerlink" title="一个计算实例"></a>一个计算实例</h4><p>$$<br>\displaystyle f(x,y)&#x3D;\frac{x+\sigma(y)}{\sigma(x)+(x+y)^2}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">3</span> <span class="comment"># 例子数值</span></span><br><span class="line">y = -<span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 前向传播</span></span><br><span class="line">sigy = <span class="number">1.0</span> / (<span class="number">1</span> + math.exp(-y)) <span class="comment"># 分子中的sigmoi          #(1)</span></span><br><span class="line">num = x + sigy <span class="comment"># 分子                                    #(2)</span></span><br><span class="line">sigx = <span class="number">1.0</span> / (<span class="number">1</span> + math.exp(-x)) <span class="comment"># 分母中的sigmoid         #(3)</span></span><br><span class="line">xpy = x + y                                              <span class="comment">#(4)</span></span><br><span class="line">xpysqr = xpy**<span class="number">2</span>                                          <span class="comment">#(5)</span></span><br><span class="line">den = sigx + xpysqr <span class="comment"># 分母                                #(6)</span></span><br><span class="line">invden = <span class="number">1.0</span> / den                                       <span class="comment">#(7)</span></span><br><span class="line">f = num * invden <span class="comment"># 搞定！                                 #(8)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 回传 f = num * invden</span></span><br><span class="line">dnum = invden <span class="comment"># 分子的梯度                                         #(8)</span></span><br><span class="line">dinvden = num                                                     <span class="comment">#(8)</span></span><br><span class="line"><span class="comment"># 回传 invden = 1.0 / den </span></span><br><span class="line">dden = (-<span class="number">1.0</span> / (den**<span class="number">2</span>)) * dinvden                                <span class="comment">#(7)</span></span><br><span class="line"><span class="comment"># 回传 den = sigx + xpysqr</span></span><br><span class="line">dsigx = (<span class="number">1</span>) * dden                                                <span class="comment">#(6)</span></span><br><span class="line">dxpysqr = (<span class="number">1</span>) * dden                                              <span class="comment">#(6)</span></span><br><span class="line"><span class="comment"># 回传 xpysqr = xpy**2</span></span><br><span class="line">dxpy = (<span class="number">2</span> * xpy) * dxpysqr                                        <span class="comment">#(5)</span></span><br><span class="line"><span class="comment"># 回传 xpy = x + y</span></span><br><span class="line">dx = (<span class="number">1</span>) * dxpy                                                   <span class="comment">#(4)</span></span><br><span class="line">dy = (<span class="number">1</span>) * dxpy                                                   <span class="comment">#(4)</span></span><br><span class="line"><span class="comment"># 回传 sigx = 1.0 / (1 + math.exp(-x))</span></span><br><span class="line">dx += ((<span class="number">1</span> - sigx) * sigx) * dsigx <span class="comment"># Notice += !! See notes below  #(3)</span></span><br><span class="line"><span class="comment"># 回传 num = x + sigy</span></span><br><span class="line">dx += (<span class="number">1</span>) * dnum                                                  <span class="comment">#(2)</span></span><br><span class="line">dsigy = (<span class="number">1</span>) * dnum                                                <span class="comment">#(2)</span></span><br><span class="line"><span class="comment"># 回传 sigy = 1.0 / (1 + math.exp(-y))</span></span><br><span class="line">dy += ((<span class="number">1</span> - sigy) * sigy) * dsigy                                 <span class="comment">#(1)</span></span><br><span class="line"><span class="comment"># 完成! 嗷~~</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="用向量化操作计算梯度"><a href="#用向量化操作计算梯度" class="headerlink" title="用向量化操作计算梯度"></a>用向量化操作计算梯度</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 前向传播</span></span><br><span class="line">W = np.random.randn(<span class="number">5</span>, <span class="number">10</span>)</span><br><span class="line">X = np.random.randn(<span class="number">10</span>, <span class="number">3</span>)</span><br><span class="line">D = W.dot(X)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 假设我们得到了D的梯度</span></span><br><span class="line">dD = np.random.randn(*D.shape) <span class="comment"># 和D一样的尺寸</span></span><br><span class="line">dW = dD.dot(X.T) <span class="comment">#.T就是对矩阵进行转置</span></span><br><span class="line">dX = W.T.dot(dD)</span><br></pre></td></tr></table></figure>
+
+<h3 id="神经网络简介"><a href="#神经网络简介" class="headerlink" title="神经网络简介"></a>神经网络简介</h3><p>神经网络是将一些简单的函数以分层的方式堆叠起来，以组成更复杂的非线性函数。</p>
+<p>一个三层的神经网络可以类比地看做$s&#x3D;W3max(0,W2max(0,W1x))$，其中W1,W2,W3是需要进行学习的参数。</p>
+<h4 id="神经网络的结构"><a href="#神经网络的结构" class="headerlink" title="神经网络的结构"></a>神经网络的结构</h4><p>一些神经元的输出是另一些神经元的输入，通常神经网络模型中神经元是分层的。</p>
+<p>神经元通过<strong>全连接层</strong>连接，层间神经元两两相连，但是层内神经元不连接；</p>
+<p>分层的结构能够让神经网络高效地进行矩阵乘法和激活函数运算</p>
+<p>讨论了更大网络总是更好的这一事实。然而更大容量的模型一定要和更强的正则化（比如更高的权重衰减）配合，否则它们就会过拟合。在后续章节中我们讲学习更多正则化的方法，尤其是dropout。</p>
+<h2 id="5-卷积神经网络"><a href="#5-卷积神经网络" class="headerlink" title="5 卷积神经网络"></a>5 卷积神经网络</h2><p>NN的结构是一系列的层将输入数据变换为输出数据。常规NN隐藏层都为全连接层，构建大网络时效率低下，容易过拟合。而CNN调整结构为卷积层、池化层、全连接层。</p>
+<h3 id="层"><a href="#层" class="headerlink" title="层"></a>层</h3><h4 id="卷积层-（conv）"><a href="#卷积层-（conv）" class="headerlink" title="卷积层 （conv）"></a>卷积层 （conv）</h4><p>负责提取特征图片，卷积核为n*n矩阵，通常自己生成然后通过反向传播修正。</p>
+<ul>
+<li><p>卷积核：卷积层的参数是有一些可学习的小卷积核集合构成的，卷积核尺寸为$kernel size\times kernel size\times num$（num是前一层的深度），前向传播时每个卷积核都与输入数据在宽高深三个维度做离散卷积运算。</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105728006.png" alt="image-20220809102319823"></p>
+</li>
+<li><p>特征图：又称为激活图，一个卷积核与输入数据卷积会生成一个二维激活图，每个卷积层上有多个卷积核也就有多个激活图，将激活图在深度方向上层叠起来就生成了输出数据。</p>
+</li>
+<li><p>局部连接：每个神经元只与输入数据的一个局部区域连接，该连接的空间大小叫做神经元的感受野（receptive field）。</p>
+<p><img src="http://upyun.cvzoo.cn/pic/%25E5%258D%25B7%25E7%25A7%25AF.gif" alt="局部连接"></p>
+</li>
+<li><p>参数</p>
+<blockquote>
+<ul>
+<li>输入数据体的尺寸为$W_1\times H_1\times D_1$</li>
+<li>4个超参数：滤波器的数量K；滤波器的空间尺寸F；步长S；零填充数量P</li>
+<li>输出数据体的尺寸为$W_2\times H_2\times D_2$，其中：<br>$$ W_2&#x3D;(W_1-F+2P)&#x2F;S+1 $$<br> $$ H_2&#x3D;(H_1-F+2P)&#x2F;S+1 $$<br> $$ D_2&#x3D;K $$</li>
+<li>由于参数共享，每个滤波器包含$F\cdot F\cdot D_1$个权重，卷积层一共有$F\cdot F\cdot D_1\cdot K$个权重和K个偏置。</li>
+<li>在输出数据体中，第d个特征图（空间尺寸是$W_2\times H_2$），用第d个滤波器和输入数据进行有效卷积运算的结果（使用步长S），最后在加上第d个偏差。</li>
+<li>对这些超参数，常见的设置是F&#x3D;3，S&#x3D;1，P&#x3D;1。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h4 id="激活层"><a href="#激活层" class="headerlink" title="激活层"></a>激活层</h4><p>将卷积层的结果做非线性映射。</p>
+<h4 id="池化层"><a href="#池化层" class="headerlink" title="池化层"></a>池化层</h4><p>负责降低特征图片维度，从而降低运算量，压缩数据和参数的量，用于减少过拟合。常用的有最大池化、均匀池化。</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105731828.jpeg" alt="pooling"></p>
+<blockquote>
+<p>反向传播：回顾一下反向传播的内容，其中max(x,y)函数的反向传播可以简单理解为将梯度只沿最大的数回传。因此，在向前传播经过汇聚层的时候，通常会把池中最大元素的索引记录下来（有时这个也叫作道岔（switches）），这样在反向传播的时候梯度的路由就很高效。</p>
+</blockquote>
+<h4 id="全连接层"><a href="#全连接层" class="headerlink" title="全连接层"></a>全连接层</h4><p>连接整个输入向量。在全连接层中，神经元对于前一层中的所有激活数据是全部连接的，这个常规神经网络中一样。</p>
+<ul>
+<li>任何全连接层都可以被转化为卷积层，最大的局部等于全局。比如，一个K&#x3D;4096的全连接层，输入数据体的尺寸是$7\times 7\times 512$，这个全连接层可以被等效地看做一个F&#x3D;7,P&#x3D;0,S&#x3D;1,K&#x3D;4096的卷积层。换句话说，就是将滤波器的尺寸设置为和输入数据体的尺寸一致，这样输出就变成$1\times 1\times 4096$，本质上和全连接层的输出是一样的。</li>
+</ul>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p>卷积神经网络通常是由三种层构成：卷积层，汇聚层（除非特别说明，一般就是最大值汇聚）和全连接层（简称FC）</p>
+<p>$$INPUT -&gt; [[CONV -&gt; RELU]\times N -&gt; POOL?]\times M -&gt; [FC -&gt; RELU]\times K -&gt; FC$$<br>$POOL?$指的是一个可选的汇聚层，通常0&lt;&#x3D;N&lt;&#x3D;3，M&gt;&#x3D;0，K&gt;&#x3D;0，通常K&lt;3。</p>
+<h2 id="6-训练神经网络1"><a href="#6-训练神经网络1" class="headerlink" title="6 训练神经网络1"></a>6 训练神经网络1</h2><h3 id="激活函数"><a href="#激活函数" class="headerlink" title="激活函数"></a>激活函数</h3><p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105736189.png" alt="image-20220808163214762"></p>
+<p>建议：用ReLU非线性函数。注意设置好学习率，监控网络中死亡的神经元占的比例。如果单元死亡问题困扰你，就试试Leaky ReLU或者Maxout。</p>
+<h3 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h3><p>零中心化：它对数据中每个独立特征减去平均值，从几何上可以理解为在每个维度上都将数据云的中心都迁移到原点。而对于图像，更常用的是减去对应图像的均值而不是每个维度的均值，也可以在3个颜色通道上分别操作。理解：初始化时参数为0均值，线性分类器经过原点，能更快速地分类零中心的数据。</p>
+<p>归一化（即标准化）：数据在每一维度的数值范围都近似相等，通常有两种方式。第一种是先对数据做零中心化处理，然后每个维度都除以其标准差，相当于对每个维度上的数据做标准化。第二种方法是对每个维度都做归一化，使得每个维度的最大和最小值是1和-1。在图像处理中像素的数值范围几乎是一致的，归一化不是很必要。</p>
+<p><img src="http://upyun.cvzoo.cn/pic/%25E9%259B%25B6%25E5%25BD%2592%25E4%25B8%2580%25E5%258C%2596%25E5%2592%258C%25E6%25A0%2587%25E5%2587%2586%25E5%258C%2596.jpeg" alt="零归一化和标准化"></p>
+<p>PCA：过线性变换将原始数据变换为一组各维度线性无关的表示，可用于提取数据的主要特征分量，常用于高维数据的降维, 通常使用PCA降维过的数据训练线性分类器和神经网络会达到非常好的性能效果，同时还能节省时间和存储器空间。</p>
+<p>白化：白化操作的输入是特征基准上的数据，然后对每个维度除以其特征值来对数值范围进行归一化。该变换的几何解释是：如果数据服从多变量的高斯分布，那么经过白化后，数据的分布将会是一个均值为零，且协方差相等的矩阵。</p>
+<p><img src="http://upyun.cvzoo.cn/pic/PCA%25E5%2592%258C%25E7%2599%25BD%25E5%258C%2596.jpeg" alt="PCA和白化"></p>
+<p>注意：任何预处理策略（比如数据均值）都只能在训练集数据上进行计算，算法训练完毕后再应用到验证集或者测试集上。在实际操作中，只会做零中心化处理。</p>
+<h3 id="参数初始化"><a href="#参数初始化" class="headerlink" title="参数初始化"></a>参数初始化</h3><p>不能将所有参数设为0, 因为如果网络中的每个神经元都计算出同样的输出，然后它们就会在反向传播中计算出同样的梯度，从而进行同样的参数更新，神经元之间就失去了不对称性的源头；从代价函数的角度来说, 参数初始化又不能太大，因此权重初始值要非常接近0又不能等于0。</p>
+<h4 id="小随机数初始化"><a href="#小随机数初始化" class="headerlink" title="小随机数初始化"></a>小随机数初始化</h4><p><img src="http://upyun.cvzoo.cn/pic/%25E5%25B0%258F%25E9%259A%258F%25E6%259C%25BA%25E6%2595%25B0%25E5%2588%259D%25E5%25A7%258B%25E5%258C%2596.png" alt="小随机数初始化"></p>
+<p>过小的数值使得传播的数据分布在0处，那么在反向传播的时候就会计算出非常小的梯度, 出现梯度消失问题；过大的数值使得传播的数据分布在饱和区，同样出现梯度消失问题。</p>
+<h4 id="使用-1-sqrt-n-校准方差"><a href="#使用-1-sqrt-n-校准方差" class="headerlink" title="使用$1&#x2F;\sqrt{n}$校准方差"></a>使用$1&#x2F;\sqrt{n}$校准方差</h4><p>随着输入数据量的增长, 随机初始化的神经元的输出数据的分布中的方差也在增大。可以推算出：$Var(s)&#x3D;(nVar(w))Var(x)$，根据$Var(aX)&#x3D;a^2Var(X)$, 只要在权重前面乘上系数$a&#x3D;1&#x2F;\sqrt{n}$就可以。而对于ReLU神经元，一半的数据分布被消减导致方差减半，应改为乘上系数$1&#x2F;\sqrt{2.0&#x2F;n}$。</p>
+<h4 id="稀疏初始化（Sparse-initialization）"><a href="#稀疏初始化（Sparse-initialization）" class="headerlink" title="稀疏初始化（Sparse initialization）"></a>稀疏初始化（Sparse initialization）</h4><p>将所有权重矩阵设为0，但是为了打破对称性，每个神经元都同下一层固定数目的神经元随机连接，其权重数值由一个小的高斯分布生成。</p>
+<h4 id="偏置（biases）的初始化"><a href="#偏置（biases）的初始化" class="headerlink" title="偏置（biases）的初始化"></a>偏置（biases）的初始化</h4><p>通常将偏置初始化为0，这是因为随机小数值权重矩阵已经打破了对称性。对于ReLU非线性激活函数，用0.01这样的小数值常量作为所有偏置的初始值能让所有的ReLU单元一开始就激活，就能保存并传播一些梯度, 但是这样做是不是总是能提高算法性能并不清楚。</p>
+<p>推荐是使用ReLU激活函数，并且使用<code>w = np.random.randn(n) * np.sqrt(2.0/n)</code>(Xavier init)来进行权重初始化</p>
+<h4 id="批量标准化BN"><a href="#批量标准化BN" class="headerlink" title="批量标准化BN"></a>批量标准化BN</h4><p>在网络的每一层之前都做预处理, 使得数据服从标准正态分布，将全连接层或卷积层与激活函数之间添加一个BatchNorm层, 使用了批量归一化的网络对于不好的初始值有更强的鲁棒性</p>
+<p><img src="http://upyun.cvzoo.cn/pic/bn%25E8%25AE%25A1%25E7%25AE%2597.png" alt="bn计算"></p>
+<p>由于BN操作也就是标准化是一个简单可求导的操作, 所以对于整个网络依然可以利用梯度下降法进行迭代优化。</p>
+<h4 id="批量归一化（Batch-Normalization）"><a href="#批量归一化（Batch-Normalization）" class="headerlink" title="批量归一化（Batch Normalization）"></a>批量归一化（Batch Normalization）</h4><p>批量归一化可以理解为在网络的每一层之前都做预处理，只是这种操作以另一种方式与网络集成在了一起。搞定！</p>
+<h3 id="损失"><a href="#损失" class="headerlink" title="损失"></a>损失</h3><p>数据损失是一个有监督学习问题，用于衡量分类算法的预测结果（即分类评分）和真实标签结果之间的一致性。公式为：$L&#x3D;\frac{1}{N}\sum_iL_i$中，N是训练集数据的样本数，相当于对所有样本的数据损失求平均。</p>
+<h5 id="分类问题"><a href="#分类问题" class="headerlink" title="分类问题"></a>分类问题</h5><p>每个样本数据具有唯一的真实标签</p>
+<p>SVM分类器的折叶损失：<br>$$L_i&#x3D;\sum_{j neq y_i}max(0,f_j-f_{y_i}+1)$$</p>
+<p>有些学者的论文中指出平方折叶损失效果更好</p>
+<p>Softmax分类器的交叉熵损失：<br>$$L_i&#x3D;-log(\frac{e^{f_{y_j}}}{\sum_j e^{f_j}})$$</p>
+<p>当类别的数目非常庞大的时候, 就需要使用 Hierarchical Softmax , Hierarchical Softmax将标签分解成一个树, 每个标签都表示成这个树上的一个路径，这个树的每个节点处都训练一个Softmax分类器来决策左树还是右树, 树的结构对于算法的最终结果影响很大，而且一般需要具体问题具体分析</p>
+<h5 id="属性分类"><a href="#属性分类" class="headerlink" title="属性分类"></a>属性分类</h5><p>当$y_i$是一个二值向量，每个样本具有一个或多个属性，而且属性之间并不相互排斥。</p>
+<p>1、对每个属性创建一个独立的二分类的分类器<br>$$L_i&#x3D;\sum_j max(0,1−y_{ij}f_j)$$</p>
+<p>在上式中,</p>
+<ul>
+<li>$y_{ij}$表示第j个类别的第i个属性的真实值, $y_{ij}$的值为1或者-1</li>
+<li>当该类别被正确预测并展示的时候，分值向量fjfj为正，其余情况为负</li>
+<li>当一个正样本的得分小于+1，或者一个负样本得分大于-1的时候就会累计损失值</li>
+</ul>
+<p>2、对每种属性训练一个独立的逻辑回归分类器</p>
+<p>$$L_i&#x3D;\sum_j y_{ij}log(\sigma(f_j))+(1−y_{ij})log(1-\sigma(f_j))$$</p>
+<h5 id="回归问题"><a href="#回归问题" class="headerlink" title="回归问题"></a>回归问题</h5><p>通常是计算预测值和真实值之间的损失, 然后用L2平方范式或L1范式度量差异。如果有多个数量被预测了，要对预测的所有维度的预测求和。</p>
+<p>$$L_i&#x3D;||f-y_i||^2_2$$<br>$$L_i&#x3D;||f-y_i||_1&#x3D;\sum_j|f_j-(y_i)_j|$$</p>
+<p>注意：L2损失要比Softmax损失优化起来困难很多, 因为L2要预测一个真实的确切值, 而Softmax是一种概率意义上的预测, 还有一点就是L2对于异常值来说会导致很大的局部梯度, 所以在回归问题中, 我们依然优先考虑可否转化为分类问题去解决, 比如如果对一个产品的星级进行预测，使用5个独立的分类器来对1-5星进行打分的效果一般比使用一个回归损失要好很多。分类还有一个额外优点，就是能给出关于回归的输出的分布，而不是一个简单的毫无把握的输出值。如果确信分类不适用，那么使用L2损失吧，但是一定要谨慎。</p>
+<h5 id="结构化预测"><a href="#结构化预测" class="headerlink" title="结构化预测"></a>结构化预测</h5><p>结构化损失是指标签可以是任意的结构，例如图表、树或者其他复杂物体的情况。通常这种情况还会假设结构空间非常巨大，不容易进行遍历。结构化SVM背后的基本思想就是在正确的结构$y_i$和得分最高的非正确结构之间画出一个边界。解决这类问题，并不是像解决一个简单无限制的最优化问题那样使用梯度下降就可以了，而是需要设计一些特殊的解决方案，这样可以有效利用对于结构空间的特殊简化假设。</p>
+<h2 id="7-训练神经网络2"><a href="#7-训练神经网络2" class="headerlink" title="7 训练神经网络2"></a>7 训练神经网络2</h2><h3 id="Fancier-optimization优化方法"><a href="#Fancier-optimization优化方法" class="headerlink" title="Fancier optimization优化方法"></a>Fancier optimization优化方法</h3><p>训练神经网络的核心问题是对损失函数的优化问题。优化方法有：随机梯度下降法(Stochastic Gradient Descent,SGD)，带动量的SGD，AdaGrad，RMSProp，Adam等等。</p>
+<p>随机梯度下降的问题：</p>
+<p>损失在一个方向很敏感，另一个方向的改变很小！ 锯齿形状</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105740302.png" alt="img"></p>
+<blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/09b75d94ff00">CS231N 学习笔记 Lecture7 训练神经网络 - 简书 (jianshu.com)</a></p>
+</blockquote>
+<h3 id="正则化-1"><a href="#正则化-1" class="headerlink" title="正则化"></a>正则化</h3><p>通过控制神经网络的容量来防止其过拟合</p>
+<h3 id="迁移学习"><a href="#迁移学习" class="headerlink" title="迁移学习"></a>迁移学习</h3><p>迁移学习(Transfer learning) 顾名思义就是把已训练好的模型参数迁移到新的模型来帮助新模型训练。</p>
+<p>深度学习的模型可以划分为 训练  和 预测  两个阶段。</p>
+<ul>
+<li><p>训练  分为两种策略：一种是白手起家<strong>从头</strong>搭建模型进行训练，一种是通过<strong>预训练</strong>模型进行训练。</p>
+</li>
+<li><p>预测  相对简单，直接用已经训练好的模型对<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E6%95%B0%E6%8D%AE%E9%9B%86&spm=1001.2101.3001.7020">数据集</a>进行预测即可。</p>
+</li>
+</ul>
+<p> <img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105742123.png" alt="img"></p>
+<h5 id="迁移学习有几种方式"><a href="#迁移学习有几种方式" class="headerlink" title="迁移学习有几种方式"></a>迁移学习有几种方式</h5><p>  1）Transfer Learning ：冻结预训练模型的全部卷积层，只训练自己定制的<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%85%A8%E8%BF%9E%E6%8E%A5%E5%B1%82&spm=1001.2101.3001.7020">全连接层</a>。</p>
+<p>  2）Extract Feature Vector ：先计算出预训练模型的卷积层对所有训练和测试数据的特征向量，然后抛开预训练模型，只训练自己定制的简配版全连接网络。</p>
+<p>  3）Fine-tune ：冻结预训练模型的部分卷积层（通常是靠近输入的多数卷积层），训练剩下的卷积层（通常是靠近输出的部分卷积层）和全连接层。</p>
+<p>   <img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105743679.png" alt="img"></p>
+<p>  第一种和第二种训练得到的模型本质上并没有什么区别,拿到新数据集，想要用预训练模型处理的时候，通常都会先用上面方法一或者方法二来看看预训练模型在新数据上的表现怎么样，摸个底。如果表现不错，还想看看能不能进一步提升，就可以试试Fine-tune，进一步解锁卷积层以继续训练模型。</p>
+<h2 id="8-深度学习软件"><a href="#8-深度学习软件" class="headerlink" title="8 深度学习软件"></a>8 深度学习软件</h2><h3 id="CPU-GPU"><a href="#CPU-GPU" class="headerlink" title="CPU&amp;GPU"></a>CPU&amp;GPU</h3><p>（我看网上说最新的cs231n已经介绍TPU了）</p>
+<p>深度学习用的GPU是Nvidia的。</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105745347.png" alt="image-20220810144437318"></p>
+<h3 id="框架"><a href="#框架" class="headerlink" title="框架"></a>框架</h3><ul>
+<li>TF</li>
+<li>PyTorch</li>
+</ul>
+<p>最近也在跟着小土堆二刷Pytorch入门，就先用这个框架吧，之前做毕业也在环境搭建上踩过坑了。</p>
+<h2 id="9-CNN案例"><a href="#9-CNN案例" class="headerlink" title="9 CNN案例"></a>9 CNN案例</h2><h3 id="AlexNet"><a href="#AlexNet" class="headerlink" title="AlexNet"></a>AlexNet</h3><p><a href="http://www.cvzoo.cn/%e7%b2%be%e8%af%bb%e3%80%902012_nips%e3%80%91alexnet/">AlexNet博客</a></p>
+<h3 id="VGG"><a href="#VGG" class="headerlink" title="VGG"></a>VGG</h3><p>深网络，小卷积核，定期池化</p>
+<h5 id="创新点："><a href="#创新点：" class="headerlink" title="创新点："></a>创新点：</h5><ul>
+<li><p>使用了更多的卷积层，更多地使用3x3卷积核代替5x5卷积核（本质上是更大、更深的AlexNet）</p>
+</li>
+<li><p>采用了模块化设计：将多个卷积层组合成块，多个VGG块后连接全连接层，不同次数的重复块即可得到不同的架构VGG-16、11、19等，网络实现与管理更为方便简洁，有效减少代码量，奠定了今天的网络模型大多分为五个stage的雏形。</p>
+</li>
+</ul>
+<h3 id="GoogLeNet"><a href="#GoogLeNet" class="headerlink" title="GoogLeNet"></a>GoogLeNet</h3><p>提升网络性能最直接的办法就是增加网络深度和宽度，这也就意味着巨量的参数。但是，巨量参数容易产生过拟合，也会大大增加计算量，因此GoogleNet设想在不提高参数的情况下，增加网络深度</p>
+<p><strong>创新</strong>：</p>
+<ul>
+<li><p>设计出Inception块，使得在不增加参数数量的情况下，将网络变得更深</p>
+</li>
+<li><p>同NiN一样使用全局平均汇聚层，在传入全连接层之前，将每个通道的高和宽变成1，大大减少了展平后的参数数量。</p>
+</li>
+<li><p>训练时增加了两个辅助分类器（预测时去掉），使用网络得以更稳定的训练（现在有了更好的训练方法，这个特性或许不是必要的）</p>
+</li>
+</ul>
+<h3 id="ResNet"><a href="#ResNet" class="headerlink" title="ResNet"></a>ResNet</h3><p>学习输入、输出之间的残差，即H ( x ) − x H(x)-xH(x)−x。X -&gt; (H(X) - X) + X。其中X这一部分为直接的identity mapping，而H(X) - X则为有参网络层要学习的输入输出间残差。<br>增加网络层次时，减少损失函数的衰减、损失。</p>
+<p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105748137.png" alt="image-20220810152200366"></p>
+<h2 id="10-循环神经网络"><a href="#10-循环神经网络" class="headerlink" title="10 循环神经网络"></a>10 循环神经网络</h2><p>RNN具有记忆功能，其输出与之前的状态和当前的输入有关，适合处理基于序列的数据。</p>
+<h3 id="网络传播机制"><a href="#网络传播机制" class="headerlink" title="网络传播机制"></a>网络传播机制</h3><h4 id="正向传播"><a href="#正向传播" class="headerlink" title="正向传播"></a>正向传播</h4><p><img src="https://lzypicstorage.oss-cn-beijing.aliyuncs.com/pic/20250121105749880.png" alt="image-20220816094751370"></p>
+<p>网络在t时刻接收到输入$x_t$之后，隐藏层的值是$s_t$，输出值是$o_t$。关键一点是，$s_t$的值不仅仅取决于$x_t$，还取决于$s_{t-1}$。可以看出，循环神经网络的输出值$o_t$，是受前面历次输入值$x_t$、$x_{t-1}$、$x_{t-2}$、$x_{t-3}$、…影响的，这就是为什么循环神经网络可以往前看任意多个输入值的原因。</p>
+<h4 id="反向传播-1"><a href="#反向传播-1" class="headerlink" title="反向传播"></a>反向传播</h4><p>同样利用链式法则，梯度沿两个方向传播，一个方向是其传递到上一层网络，另一个是方向是将其沿时间线传递到初始时刻，相比CNN过程更加复杂。</p>
+<h4 id="梯度爆炸和消失"><a href="#梯度爆炸和消失" class="headerlink" title="梯度爆炸和消失"></a>梯度爆炸和消失</h4><p>RNN在训练中很容易发生梯度爆炸和梯度消失，这导致训练时梯度不能在较长序列中一直传递下去，从而使RNN无法捕捉到长距离的影响。</p>
+<p>通常来说，梯度爆炸更容易处理一些。因为梯度爆炸的时候，我们的程序会收到NaN错误；也可以设置一个梯度阈值，当梯度超过这个阈值的时候可以直接截取。</p>
+<p>梯度消失更难检测，而且也更难处理一些。总的来说，我们有三种方法应对梯度消失问题：</p>
+<ul>
+<li>合理的初始化权重值。初始化权重，使每个神经元尽可能不要取极大或极小值，以躲开梯度消失的区域。</li>
+<li>使用relu代替sigmoid和tanh作为激活函数。</li>
+<li>使用其他结构的RNNs，比如长短时记忆网络（LTSM）和Gated Recurrent Unit（GRU）</li>
+</ul>
+<h3 id="LSTM"><a href="#LSTM" class="headerlink" title="LSTM"></a>LSTM</h3><p>为解决原始RNN无法处理长距离依赖的问题，长短时记忆网络（LSTM）采用两种状态：h（对短期的输入敏感）、c（保存长期的状态）</p>
+
+  </div>
+  
+  
+    
+    <div class='footer'>
+       <!-- 参考资料、相关资料等 -->
+      
+       <!-- 相关文章 -->
+      
+      <!-- 版权声明组件 -->
+      
+      <!-- 打赏组件 -->
+      
+    </div>
+  
+  
+    
+
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateModified" datetime="2022-08-16T19:58:09+08:00">
+  <a class='notlink'>
+    <i class="fa-solid fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：2022年8月16日</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.cvzoo.cn/2022/20220816-cs231n/&title=粗略的cs231n学习笔记 - 莫拉维克猫屋&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.cvzoo.cn/2022/20220816-cs231n/&title=粗略的cs231n学习笔记 - 莫拉维克猫屋&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://www.cvzoo.cn/2022/20220816-cs231n/&title=粗略的cs231n学习笔记 - 莫拉维克猫屋&summary="
+          
+          >
+          
+            <img src="https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/logo/128/weibo.png">
+          
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+    <!-- Custom Files bottomMeta begin -->
+    
+    <!-- Custom Files bottomMeta end -->
+  </div>
+
+
+  
+  
+
+  
+    <div class="prev-next">
+      
+        <a class='prev' href='/2025/20250103-Awesome-3D-Detection-with-4D-Radar/'>
+          <p class='title'><i class="fa-solid fa-chevron-left" aria-hidden="true"></i>4D Radar -  A Novel Sensing Paradigm for 3D Object Detection</p>
+          <p class='content'>【If you want to add anything to this repository, please create a PR to github.com&#x2F;liuzengyun...</p>
+        </a>
+      
+      
+        <a class='next' href='/2021/202109250-simulink/'>
+          <p class='title'>simulink仿真数字通信系统<i class="fa-solid fa-chevron-right" aria-hidden="true"></i></p>
+          <p class='content'>前言读了好几年通信工程起码要知道个最简单的通信系统模型吧。
+最近时间比较充足，总结一下之前做的信息论与编码实验，回顾一下通信原理的信息论与编码的基本知识。
+本实验搭建了完整的通信系统，进行信源编...</p>
+        </a>
+      
+    </div>
+  
+  <!-- 文章推荐 -->
+  
+  
+  <!-- Custom Files postEnd begin-->
+  
+  <!-- Custom Files postEnd end-->
+</article>
+
+
+  
+
+
+  <article class="post white-box shadow floatable blur" id="comments">
+    <span hidden>
+      <meta itemprop="discussionUrl" content="/2022/20220816-cs231n/index.html#comments">
+    </span>
+    <p ct><i class='fa-solid fa-comments'></i> 评论</p>
+    
+
+    <div id="layoutHelper-comments"></div>
+
+  </article>
+
+
+
+
+
+
+</div>
+<aside id='l_side' itemscope itemtype="https://schema.org.cn/WPSideBar">
+  
+
+  
+    
+    
+      
+    
+  
+
+
+<div class="widget-sticky">
+
+  
+  
+
+
+<section class="widget toc-wrapper desktop mobile" id="toc-div" >
+  
+  <header>
+    
+      <i class="fa-solid fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+  <div class='content'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1"><span class="toc-text">1</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E6%A6%82%E8%BF%B0"><span class="toc-text">1.1 概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%8E%86%E5%8F%B2%E8%83%8C%E6%99%AF"><span class="toc-text">1.2 历史背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-1-history-of-cv"><span class="toc-text">1.2.1 history of cv</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E8%AF%BE%E7%A8%8B%E4%BB%8B%E7%BB%8D"><span class="toc-text">1.3 课程介绍</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB"><span class="toc-text">2 图像分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8%E6%96%B9%E6%B3%95"><span class="toc-text">2.1 数据驱动方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E4%B8%8E%E6%8C%91%E6%88%98"><span class="toc-text">问题与挑战</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E7%9A%84%E4%BB%BB%E5%8A%A1"><span class="toc-text">我们的任务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%A0%E7%BB%9F%E6%96%B9%E6%B3%95"><span class="toc-text">传统方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">数据驱动的方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%BE%E4%BE%8B"><span class="toc-text">数据集举例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E4%BA%8E%E6%AF%94%E8%BE%83%E5%9B%BE%E5%83%8F%E7%9B%B8%E4%BC%BC%E6%80%A7%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="toc-text">用于比较图像相似性的损失函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%80%E8%BF%91%E9%82%BB%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">最近邻的问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-KNN"><span class="toc-text">2.2 KNN</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B6%85%E5%8F%82%E8%AE%BE%E7%BD%AE"><span class="toc-text">超参设置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E7%BA%BF%E6%80%A7%E5%88%86%E7%B1%BB"><span class="toc-text">2.3 线性分类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E4%BC%98%E5%8C%96%E5%99%A8"><span class="toc-text">3 损失函数和优化器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="toc-text">损失函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E7%B1%BBSVM"><span class="toc-text">多类SVM</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A3%E5%88%99%E5%8C%96"><span class="toc-text">正则化</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Softmax"><span class="toc-text">Softmax</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SVM%E5%92%8CSoftmax%E7%9A%84%E6%AF%94%E8%BE%83"><span class="toc-text">SVM和Softmax的比较</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E5%99%A8"><span class="toc-text">优化器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%80%E4%BC%98%E5%8C%96"><span class="toc-text">最优化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D"><span class="toc-text">梯度下降</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%9A%8F%E6%9C%BA%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%EF%BC%9A"><span class="toc-text">随机梯度下降：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-text">4 反向传播与神经网络</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="toc-text">反向传播</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%BC%E6%95%B0%E4%B8%8E%E6%A2%AF%E5%BA%A6"><span class="toc-text">导数与梯度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%93%BE%E5%BC%8F%E6%B3%95%E5%88%99"><span class="toc-text">链式法则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E8%AE%A1%E7%AE%97%E5%AE%9E%E4%BE%8B"><span class="toc-text">一个计算实例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E5%90%91%E9%87%8F%E5%8C%96%E6%93%8D%E4%BD%9C%E8%AE%A1%E7%AE%97%E6%A2%AF%E5%BA%A6"><span class="toc-text">用向量化操作计算梯度</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%AE%80%E4%BB%8B"><span class="toc-text">神经网络简介</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-text">神经网络的结构</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-text">5 卷积神经网络</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%82"><span class="toc-text">层</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%B7%E7%A7%AF%E5%B1%82-%EF%BC%88conv%EF%BC%89"><span class="toc-text">卷积层 （conv）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BF%80%E6%B4%BB%E5%B1%82"><span class="toc-text">激活层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B1%A0%E5%8C%96%E5%B1%82"><span class="toc-text">池化层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%A8%E8%BF%9E%E6%8E%A5%E5%B1%82"><span class="toc-text">全连接层</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84"><span class="toc-text">结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E8%AE%AD%E7%BB%83%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C1"><span class="toc-text">6 训练神经网络1</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0"><span class="toc-text">激活函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-text">数据预处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">参数初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%8F%E9%9A%8F%E6%9C%BA%E6%95%B0%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">小随机数初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-1-sqrt-n-%E6%A0%A1%E5%87%86%E6%96%B9%E5%B7%AE"><span class="toc-text">使用$1&#x2F;\sqrt{n}$校准方差</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A8%80%E7%96%8F%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%88Sparse-initialization%EF%BC%89"><span class="toc-text">稀疏初始化（Sparse initialization）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%81%8F%E7%BD%AE%EF%BC%88biases%EF%BC%89%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">偏置（biases）的初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%96BN"><span class="toc-text">批量标准化BN</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%B9%E9%87%8F%E5%BD%92%E4%B8%80%E5%8C%96%EF%BC%88Batch-Normalization%EF%BC%89"><span class="toc-text">批量归一化（Batch Normalization）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8D%9F%E5%A4%B1"><span class="toc-text">损失</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="toc-text">分类问题</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7%E5%88%86%E7%B1%BB"><span class="toc-text">属性分类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9B%9E%E5%BD%92%E9%97%AE%E9%A2%98"><span class="toc-text">回归问题</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E5%8C%96%E9%A2%84%E6%B5%8B"><span class="toc-text">结构化预测</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E8%AE%AD%E7%BB%83%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C2"><span class="toc-text">7 训练神经网络2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Fancier-optimization%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95"><span class="toc-text">Fancier optimization优化方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E5%88%99%E5%8C%96-1"><span class="toc-text">正则化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0"><span class="toc-text">迁移学习</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E6%9C%89%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-text">迁移学习有几种方式</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%BD%AF%E4%BB%B6"><span class="toc-text">8 深度学习软件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CPU-GPU"><span class="toc-text">CPU&amp;GPU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%86%E6%9E%B6"><span class="toc-text">框架</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-CNN%E6%A1%88%E4%BE%8B"><span class="toc-text">9 CNN案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AlexNet"><span class="toc-text">AlexNet</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VGG"><span class="toc-text">VGG</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%9B%E6%96%B0%E7%82%B9%EF%BC%9A"><span class="toc-text">创新点：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GoogLeNet"><span class="toc-text">GoogLeNet</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ResNet"><span class="toc-text">ResNet</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-text">10 循环神经网络</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E4%BC%A0%E6%92%AD%E6%9C%BA%E5%88%B6"><span class="toc-text">网络传播机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A3%E5%90%91%E4%BC%A0%E6%92%AD"><span class="toc-text">正向传播</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD-1"><span class="toc-text">反向传播</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A2%AF%E5%BA%A6%E7%88%86%E7%82%B8%E5%92%8C%E6%B6%88%E5%A4%B1"><span class="toc-text">梯度爆炸和消失</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LSTM"><span class="toc-text">LSTM</span></a></li></ol></li></ol>
+  </div>
+</section>
+
+  
+
+</div>
+
+  <!-- Custom Files side begin -->
+  
+  <!-- Custom Files side end -->
+</aside>
+
+
+
+        </div>
+        
+  
+  <footer class="footer clearfix"  itemscope itemtype="https://schema.org.cn/WPFooter">
+    <br><br>
+    
+      
+        
+          <div><p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">鲁ICP备20004960号-5</a> | <a target="_blank" rel="noopener" href="https://icp.gov.moe/?keyword=20248817">萌ICP备20248817号</a></p>
+</div>
+        
+      
+    
+      
+        
+          <div><p>本站基于 <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> 框架，使用 <a target="_blank" rel="noopener" href="https://volantis.js.org/">Volantis</a> 作为主题，由 <a target="_blank" rel="noopener" href="https://www.aliyun.com/">阿里云</a> &amp; <a target="_blank" rel="noopener" href="https://www.upyun.com/">又拍云</a> 提供CDN加速&#x2F;对象存储服务</p>
+</div>
+        
+      
+    
+    <!-- Custom Files footer begin-->
+    
+    <!-- Custom Files footer end-->
+  </footer>
+
+
+        <a id="s-top" class="fa-solid fa-arrow-up fa-fw" title="top"></a>
+      </div>
+    </div>
+    <div>
+      <script>
+  /******************** volantis.dom ********************************/
+  // 页面选择器 将dom对象缓存起来 see: /source/js/app.js etc.
+  volantis.dom.bodyAnchor = volantis.dom.$(document.getElementById("safearea")); // 页面主体
+  volantis.dom.topBtn = volantis.dom.$(document.getElementById('s-top')); // 向上
+  volantis.dom.wrapper = volantis.dom.$(document.getElementById('wrapper')); // 整个导航栏
+  volantis.dom.coverAnchor = volantis.dom.$(document.querySelector('#l_cover .cover-wrapper')); // 1个
+  volantis.dom.switcher = volantis.dom.$(document.querySelector('#l_header .switcher .s-search')); // 搜索按钮   移动端 1个
+  volantis.dom.header = volantis.dom.$(document.getElementById('l_header')); // 移动端导航栏
+  volantis.dom.search = volantis.dom.$(document.querySelector('#l_header .m_search')); // 搜索框 桌面端 移动端 1个
+  volantis.dom.mPhoneList = volantis.dom.$(document.querySelectorAll('#l_header .m-phone .list-v')); //  手机端 子菜单 多个
+</script>
+
+<script>
+  
+  volantis.css("https://cdn.bootcdn.net/ajax/libs/font-awesome/6.6.0/css/all.min.css");
+  
+  
+  
+</script>
+
+<!-- required -->
+
+
+<!-- internal -->
+
+<script src="/js/app.js"></script>
+
+
+
+
+<!-- rightmenu要在darkmode之前（ToggleButton） darkmode要在comments之前（volantis.dark.push）-->
+
+
+
+<script>
+  function loadIssuesJS() {
+    
+      const sites_api = document.getElementById('sites-api');
+      if (sites_api != undefined && typeof SitesJS === 'undefined') {
+        volantis.js("/js/plugins/tags/sites.js")
+      }
+    
+    
+      const friends_api = document.getElementById('friends-api');
+      if (friends_api != undefined && typeof FriendsJS === 'undefined') {
+        volantis.js("/js/plugins/tags/friends.js")
+      }
+    
+    
+      const contributors_api = document.getElementById('contributors-api');
+      if (contributors_api != undefined && typeof ContributorsJS === 'undefined') {
+        volantis.js("/js/plugins/tags/contributors.js")
+      }
+    
+  };
+  loadIssuesJS()
+</script>
+
+
+
+
+
+
+  
+
+<script>
+  window.FPConfig = {
+	delay: 0,
+	ignoreKeywords: ["#"],
+	maxRPS: 6,
+	hoverDelay: 0
+  };
+</script>
+<script defer src="https://unpkg.com/volantis-static@0.0.1660614606622/libs/flying-pages/flying-pages.min.js"></script>
+
+
+
+
+
+
+
+
+
+      <script>
+  volantis.layoutHelper("comments",`<div id="giscus_container"></div>`)
+
+  volantis.giscus = {};
+
+  function check_giscus() {
+    if (volantis.dark.mode === "dark") {
+      volantis.giscus.Theme = 'dark';
+    } else {
+      volantis.giscus.Theme = 'light';
+    }
+
+    return document.getElementById("giscus_container");
+  }
+
+  function p_giscus() {
+    const HEAD = check_giscus();
+    if (!HEAD) return;
+    let cfg = Object.assign({"theme":{"light":"light","dark":"dark"},"repo":"liuzengyun/cvzoo","repo-id":"R_kgDONW8-Rg","category":"Announcements","category-id":"DIC_kwDONW8-Rs4ClHqG","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","lang":"zh-CN"},pdata.commentConfig)
+    const script = document.createElement('script');
+    script.setAttribute('src', 'https://giscus.app/client.js');
+    Object.keys(cfg).forEach(k=>{
+      if (k != "theme") {
+        script.setAttribute('data-'+k, cfg[k]);
+      }
+    })
+    script.setAttribute('data-theme', volantis.giscus.Theme);
+    script.setAttribute('crossorigin', "anonymous");
+    HEAD.appendChild(script);
+  }
+
+  function dark_giscus() {
+    const HEAD = check_giscus();
+    if (!HEAD) return;
+
+    const message = {
+      setConfig: {
+        theme: volantis.giscus.Theme
+      }
+    };
+    const giscusIframe = document.querySelector('iframe.giscus-frame');
+    giscusIframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+  }
+  p_giscus();
+  volantis.dark.push(dark_giscus);
+</script>
+
+    
+
+
+
+
+
+<!-- optional -->
+
+  <script>
+  async function loadSearchScript() {
+    
+        
+    
+    return volantis.js("/js/search/hexo.js");
+  }
+
+  function loadSearchService() {
+    loadSearchScript();
+    document.querySelectorAll(".input.u-search-input").forEach((e) => {
+      e.removeEventListener("focus", loadSearchService, false);
+    });
+
+    document.querySelectorAll(".u-search-form").forEach((e) => {
+      e.addEventListener("submit", (event) => {
+        event.preventDefault();
+      }, false);
+    });
+  }
+
+  // 打开并搜索 字符串 s
+  function OpenSearch(s) {
+    if (typeof SearchService === 'undefined')
+      loadSearchScript().then(() => {
+        SearchService.setQueryText(s);
+        SearchService.search();
+      });
+    else {
+      SearchService.setQueryText(s);
+      SearchService.search();
+    }
+  }
+
+  // 访问含有 ?s=xxx  的链接时打开搜索 // 与搜索引擎 structured data 相关: /scripts/helpers/structured-data/lib/config.js
+  if (window.location.search && /^\?s=/g.test(window.location.search)) {
+    let queryText = decodeURI(window.location.search)
+      .replace(/\ /g, "-")
+      .replace(/^\?s=/g, "");
+    OpenSearch(queryText);
+  }
+
+  // 搜索输入框获取焦点时加载搜索
+  document.querySelectorAll(".input.u-search-input").forEach((e) => {
+    e.addEventListener("focus", loadSearchService, false);
+  });
+</script>
+
+
+
+
+
+
+
+  <script>
+
+
+
+  function p_highlightjs_copyCode(){
+    if (!(document.querySelector(".highlight .code pre") ||
+      document.querySelector(".article pre code"))) {
+      return;
+    }
+    VolantisApp.utilCopyCode(".highlight .code pre, .article pre code")
+  }
+  volantis.requestAnimationFrame(p_highlightjs_copyCode)
+
+</script>
+
+
+
+
+
+
+
+
+
+
+  <script>
+  function load_swiper() {
+    if (!document.querySelectorAll(".swiper-container")[0]) return;
+    volantis.css("https://cdn.bootcdn.net/ajax/libs/Swiper/11.1.14/swiper-bundle.min.css");
+    volantis.js("https://cdn.bootcdn.net/ajax/libs/Swiper/11.1.14/swiper-bundle.min.js").then(() => {
+      p_swiper();
+    });
+  }
+
+  load_swiper();
+
+  function p_swiper() {
+    volantis.swiper = new Swiper('.swiper-container', {
+      slidesPerView: 'auto',
+      spaceBetween: 8,
+      centeredSlides: true,
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+  }
+
+</script>
+
+
+
+  <script>
+  volantis.css("https://cdn.bootcdn.net/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.min.css");
+  volantis.js("https://cdn.bootcdn.net/ajax/libs/pace/1.2.4/pace.min.js").then(() => {
+    Pace.options.restartOnPushState = false;
+    // 阅读进度
+    volantis.scroll.push(() => {
+      Pace.stop();
+      Pace.trigger('start');
+      Pace.bar.update(volantis.scroll.progress() * 100);
+      document.body.className = document.body.className.replaceAll("pace-running ","");
+    },"阅读进度")
+    // todo：配置项开关, 哪些页面添加阅读进度
+  })
+</script>
+
+
+
+        <script>
+  // https://github.com/theme-next/hexo-theme-next/blob/master/layout/_third-party/math/mathjax.swig
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = "https://cdn.bootcdn.net/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js";
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    // 文章章节标题不能为 “MathJax” ，否则会报错。
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typesetPromise();
+  }
+</script>
+
+
+
+
+<script>
+  function listenSidebarTOC() {
+    const navItems = document.querySelectorAll(".toc li");
+    if (!navItems.length) return;
+    const targets = []
+    const sections = Array.from(navItems).forEach((element) => {
+      const link = element.querySelector(".toc-link");
+      const target = document.getElementById(
+        link.getAttribute("href") ? decodeURI(link.getAttribute("href")).replace("#", "") : link.getAttribute("toc-action").split("toc-")[1] // 兼容 hexo-blog-encrypt
+      );
+      targets.push(target)
+      // 解除 a 标签 href 的 锚点定位, a 标签 href 的 锚点定位 会随机启用?? 产生错位???
+      if (link.getAttribute("href")) {
+        link.setAttribute("toc-action", "toc-" + decodeURI(link.getAttribute("href")).replace("#", ""))
+        link.removeAttribute("href")
+      }
+      // 配置 点击 触发新的锚点定位
+      if (target && target.id) {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          // 这里的 addTop 是通过错位使得 toc 自动展开.
+          volantis.scroll.to(target, { addTop: 5, observer: true })
+          // Anchor id
+          history.pushState(null, document.title, "#" + target.id);
+        });
+      }
+      return target;
+    });
+
+    function activateNavByIndex(target) {
+      if (target.classList.contains("active-current")) return;
+
+      document.querySelectorAll(".toc .active").forEach((element) => {
+        element.classList.remove("active", "active-current");
+      });
+      target.classList.add("active", "active-current");
+      let parent = target.parentNode;
+      while (!parent.matches(".toc")) {
+        if (parent.matches("li")) parent.classList.add("active");
+        parent = parent.parentNode;
+      }
+    }
+
+    // 方案一：
+    volantis.activateNavIndex = 0
+    activateNavByIndex(navItems[volantis.activateNavIndex])
+    if (targets[0]) {
+      volantis.scroll.push(() => {
+        if (targets[0].getBoundingClientRect().top >= 0) {
+          volantis.activateNavIndex = 0
+        } else if (targets[targets.length - 1].getBoundingClientRect().top < 0) {
+          volantis.activateNavIndex = targets.length - 1
+        } else {
+          for (let index = 0; index < targets.length; index++) {
+            const target0 = targets[index];
+            const target1 = targets[(index + 1) % targets.length];
+            if (target0.getBoundingClientRect().top < 0 && target1.getBoundingClientRect().top >= 0) {
+              volantis.activateNavIndex = index
+              break;
+            }
+          }
+        }
+        activateNavByIndex(navItems[volantis.activateNavIndex])
+      })
+    }
+
+    // 方案二：
+    // IntersectionObserver 不是完美精确到像素级别 也不是低延时性的
+    // function findIndex(entries) {
+    //   let index = 0;
+    //   let entry = entries[index];
+    //   if (entry.boundingClientRect.top > 0) {
+    //     index = sections.indexOf(entry.target);
+    //     return index === 0 ? 0 : index - 1;
+    //   }
+    //   for (; index < entries.length; index++) {
+    //     if (entries[index].boundingClientRect.top <= 0) {
+    //       entry = entries[index];
+    //     } else {
+    //       return sections.indexOf(entry.target);
+    //     }
+    //   }
+    //   return sections.indexOf(entry.target);
+    // }
+    // function createIntersectionObserver(marginTop) {
+    //   marginTop = Math.floor(marginTop + 10000);
+    //   let intersectionObserver = new IntersectionObserver(
+    //     (entries, observe) => {
+    //       let scrollHeight = document.documentElement.scrollHeight;
+    //       if (scrollHeight > marginTop) {
+    //         observe.disconnect();
+    //         createIntersectionObserver(scrollHeight);
+    //         return;
+    //       }
+    //       let index = findIndex(entries);
+    //       activateNavByIndex(navItems[index]);
+    //     }, {
+    //       rootMargin: marginTop + "px 0px -100% 0px",
+    //       threshold: 0,
+    //     }
+    //   );
+    //   sections.forEach((element) => {
+    //     element && intersectionObserver.observe(element);
+    //   });
+    // }
+    // createIntersectionObserver(document.documentElement.scrollHeight);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    volantis.requestAnimationFrame(listenSidebarTOC)
+  });
+</script>
+
+
+
+
+
+<script>
+  document.onreadystatechange = function () {
+    if (document.readyState == 'complete') {
+      // 页面加载完毕 样式加载失败，或是当前网速慢，或是开启了省流模式
+      const { saveData, effectiveType } = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {}
+      if (getComputedStyle(document.querySelector("#safearea"), null)["display"] == "none" || saveData || /2g/.test(effectiveType)) {
+        document.querySelectorAll(".reveal").forEach(function (e) {
+          e.style["opacity"] = "1";
+        });
+        document.querySelector("#safearea").style["display"] = "block";
+      }
+    }
+  }
+</script>
+
+
+  <script type="application/ld+json">[{"@context":"https://schema.org.cn","@type":"Organization","name":"莫拉维克猫屋","url":"http://www.cvzoo.cn/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},{"@context":"https://schema.org.cn","@type":"Person","name":"lzy","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://www.cvzoo.cn/","sameAs":["https://github.com/volantis-x"],"description":"莫拉维克猫屋, 刘增运个人博客"},{"@context":"https://schema.org.cn","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"http://www.cvzoo.cn/","name":"莫拉维克猫屋"}},{"@type":"ListItem","position":3,"item":{"@id":"http://www.cvzoo.cn/2022/20220816-cs231n/","name":"粗略的cs231n学习笔记"}}]},{"@context":"https://schema.org.cn","@type":"WebSite","name":"莫拉维克猫屋","url":"http://www.cvzoo.cn/","keywords":null,"description":"莫拉维克猫屋, 刘增运个人博客","author":{"@type":"Person","name":"lzy","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://www.cvzoo.cn/","description":"莫拉维克猫屋, 刘增运个人博客"},"publisher":{"@type":"Organization","name":"莫拉维克猫屋","url":"http://www.cvzoo.cn/","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"potentialAction":{"@type":"SearchAction","name":"Site Search","target":{"@type":"EntryPoint","urlTemplate":"http://www.cvzoo.cn?s={search_term_string}"},"query-input":"required name=search_term_string"}},{"@context":"https://schema.org.cn","@type":"BlogPosting","headline":"粗略的cs231n学习笔记","description":"莫拉维克猫屋, 刘增运个人博客","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.cvzoo.cn/2022/20220816-cs231n/"},"author":{"@type":"Person","name":"lzy","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png"},"url":"http://www.cvzoo.cn/"},"publisher":{"@type":"Organization","name":"莫拉维克猫屋","logo":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}},"url":"http://www.cvzoo.cn/2022/20220816-cs231n/","wordCount":0,"datePublished":"2022-08-16T11:58:09.000Z","dateModified":"2022-08-16T11:58:09.000Z","image":{"@type":"ImageObject","url":"https://unpkg.com/volantis-static@0.0.1660614606622/media/org.volantis/blog/favicon/android-chrome-192x192.png","width":192,"height":192}}]</script>
+
+
+
+
+    </div>
+    <!-- import body_end begin-->
+    <!-- import body_end end-->
+    <!-- Custom Files bodyEnd begin-->
+    
+    <!-- Custom Files bodyEnd end-->
+  </body>
+</html>
